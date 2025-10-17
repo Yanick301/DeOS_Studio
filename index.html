@@ -1,0 +1,2333 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>DeOS Studio | Création Mobile</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap" rel="stylesheet">
+    <link rel="manifest" href="/manifest.json">
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.8.49/Tone.min.js"></script>
+    
+    <script type="module">
+        import { createIcons, Download, Home, Edit, Save, Layout, FileText, User, Mail, Phone, MapPin, Briefcase, BookOpen, Star, Monitor, Code, Layers, Trash2, Aperture, Loader, Plus, ChevronRight, Clock, Award, Users, Settings, Bell, ChevronLeft } from 'https://unpkg.com/lucide@latest';
+        createIcons({ icons: { Download, Home, Edit, Save, Layout, FileText, User, Mail, Phone, MapPin, Briefcase, BookOpen, Star, Monitor, Code, Layers, Trash2, Aperture, Loader, Plus, ChevronRight, Clock, Award, Users, Settings, Bell, ChevronLeft } });
+    </script>
+    
+    <script type="module">
+        import { createIcons, Download, Home, Edit, Save, Layout, FileText, User, Mail, Phone, MapPin, Briefcase, BookOpen, Star, Monitor, Code, Layers, Trash2, Aperture, Loader, Plus, ChevronRight, Clock, Award, Users, Settings, Bell, ChevronLeft } from 'https://unpkg.com/lucide@latest';
+        createIcons({ icons: { Download, Home, Edit, Save, Layout, FileText, User, Mail, Phone, MapPin, Briefcase, BookOpen, Star, Monitor, Code, Layers, Trash2, Aperture, Loader, Plus, ChevronRight, Clock, Award, Users, Settings, Bell, ChevronLeft } });
+    </script>
+    
+    <style>
+        /* Variables de couleur et Police */
+        :root {
+            --color-primary: #4f46e5; /* Indigo */
+            --color-accent: #f59e0b; 
+            --color-text: #1c1c1e; 
+            --color-bg-light: #f5f7f9; /* Fond plus clair et moderne */
+            --nav-height: 64px; /* Hauteur de la barre de navigation */
+        }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--color-bg-light);
+            color: var(--color-text);
+            overflow-x: hidden;
+            overscroll-behavior: none; 
+            padding-bottom: var(--nav-height); 
+        }
+        
+        /* Effet de Flou (Glassmorphism) pour la navigation du bas */
+        .glass-nav-bottom {
+            backdrop-filter: blur(15px) saturate(180%);
+            -webkit-backdrop-filter: blur(15px) saturate(180%);
+            background-color: rgba(255, 255, 255, 0.9);
+            border-top: 1px solid rgba(0, 0, 0, 0.05);
+        }
+
+        /* CARD STYLE Apple-like */
+        .app-card {
+            background-color: white;
+            border-radius: 16px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.03);
+            padding: 20px;
+        }
+        
+        /* CHAMP INPUT STYLE */
+        .input-field {
+            width: 100%;
+            padding: 12px 16px;
+            border: 1px solid #e5e7eb;
+            border-radius: 12px;
+            font-size: 1rem;
+            transition: border-color 0.3s, box-shadow 0.3s;
+            background-color: #ffffff;
+        }
+        .input-field:focus {
+            outline: none;
+            border-color: var(--color-primary);
+            box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.2); /* Indigo Shadow */
+        }
+        
+        /* CV Preview for export - Hidden */
+        #cv-preview-container-hidden {
+            width: 210mm; 
+            height: 297mm;
+            min-height: 297mm;
+            background-color: white; /* Base white, overridden by template */
+            box-shadow: none;
+            overflow: hidden;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Styles pour le rendu du CV */
+        .cv-text-xs { font-size: 0.6rem; line-height: 1rem; }
+        .cv-text-sm { font-size: 0.75rem; line-height: 1.2rem; }
+        .cv-text-base { font-size: 0.9rem; line-height: 1.4rem; }
+        .cv-icon-sm { width: 10px; height: 10px; }
+        .cv-icon-md { width: 12px; height: 12px; }
+        
+        /* ================================================= */
+        /* ANIMATIONS SPLASH SCREEN (V9.2)                   */
+        /* ================================================= */
+
+        /* 1. Animation globale de fin (fade-out et blur) - Durée 1.8s */
+        @keyframes fade-out-and-blur {
+            0% { opacity: 1; filter: blur(0px); }
+            75% { opacity: 1; filter: blur(0px); }
+            100% { opacity: 0; filter: blur(10px); }
+        }
+
+        /* 2. Animation d'entrée du logo (LÉVITATION & ROTATION 3D SUBTILE) */
+        @keyframes logo-lift-in {
+            0% { opacity: 0; transform: translateY(50px) scale(0.95) rotateX(10deg); }
+            50% { opacity: 1; transform: translateY(-5px) scale(1) rotateX(-2deg); } /* Pic de lévitation */
+            100% { opacity: 1; transform: translateY(0) scale(1) rotateX(0deg); }
+        }
+
+        /* 3. Animation d'entrée du slogan (RÉVÉLATION PAR MASQUE DE CLIP) */
+        @keyframes tagline-reveal {
+            0% { clip-path: inset(0 100% 0 0); opacity: 0; }
+            50% { opacity: 1; } 
+            100% { clip-path: inset(0 0 0 0); opacity: 1; }
+        }
+
+        /* Application de l'animation globale de fin */
+        #splash-screen.active {
+            animation: fade-out-and-blur 1.8s ease-in-out forwards; 
+        }
+
+        /* Application des animations individuelles au chargement */
+        #splash-logo {
+            /* Utilisation d'un cubic-bezier pour l'effet de lévitation */
+            animation: logo-lift-in 1.2s cubic-bezier(0.23, 1, 0.32, 1) forwards; 
+            transform-origin: bottom center; /* Point de pivot pour la rotation X */
+            opacity: 0; /* Caché initialement */
+        }
+
+        #splash-tagline {
+            /* Révélation après 0.6s de l'animation du logo */
+            animation: tagline-reveal 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards; 
+            animation-delay: 0.6s; 
+            opacity: 0; /* Caché initialement */
+        }
+        
+        /* Style des petits inputs */
+        .input-field-small { 
+            padding: 8px 12px; 
+            font-size: 0.9rem; 
+            border-radius: 8px; 
+            border: 1px solid #e5e7eb; 
+            background-color: white;
+            width: 100%;
+        }
+    </style>
+</head>
+<script>
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('/service-worker.js')
+      .then(reg => console.log('✅ Service Worker enregistré avec succès:', reg))
+      .catch(err => console.log('❌ Erreur Service Worker:', err));
+  });
+}
+</script>
+<body>
+    <div id="splash-screen" class="w-full h-full fixed inset-0 flex justify-center items-center flex-col z-[9999] bg-white cursor-pointer">
+    <div class="logo-text text-5xl font-black flex items-center text-gray-900" id="splash-logo">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" class="w-12 h-12 mr-4 text-indigo-600">
+            <rect x="3" y="3" width="18" height="18" rx="5"/>
+            <path d="M12 18V6" />
+            <path d="M9 9h6" />
+        </svg>
+        DeOS
+    </div>
+    <p class="mt-4 text-xl font-light text-gray-600" id="splash-tagline">Tapez pour commencer la création.</p>
+</div>
+
+<div id="cv-preview-container-hidden" class="hidden">
+    </div>
+
+
+<div id="app" class="hidden min-h-screen">
+
+    <main id="page-container" class="pb-16 px-4 max-w-xl mx-auto">
+        
+        <section id="accueil" class="page-transition page-visible min-h-screen flex flex-col justify-start pt-10">
+            
+            <div class="app-card text-center p-8 bg-white border-t-8 rounded-2xl shadow-2xl" style="border-color: var(--color-primary); background: linear-gradient(145deg, #ffffff 50%, #f0f8ff 100%);">
+                <i data-lucide="award" class="w-10 h-10 mx-auto text-yellow-500 mb-3"></i>
+                <h1 class="text-4xl font-extrabold tracking-tight text-gray-900 leading-snug">
+                    <span class="text-indigo-600">Mon CV</span> en un Clic.
+                </h1>
+                <p class="text-lg text-gray-600 font-normal mt-3">
+                    Votre studio mobile pour des documents qui impressionnent. Design, structure et professionnalisme garantis.
+                </p>
+                <button onclick="navigateTo('creation')" class="mt-6 w-full px-6 py-3 bg-indigo-600 text-white text-lg font-semibold rounded-xl shadow-lg shadow-indigo-500/50 hover:bg-indigo-700 transition-all duration-300 flex items-center justify-center">
+                    Créer Maintenant <i data-lucide="chevron-right" class="w-5 h-5 ml-2"></i>
+                </button>
+            </div>
+            
+            <div class="mt-8 space-y-4">
+                <h3 class="text-2xl font-bold text-gray-900 ml-2 border-b-2 border-gray-200 pb-2 flex items-center"><i data-lucide="settings" class="w-6 h-6 mr-2 text-gray-600"></i> Avantages Clés</h3>
+                <div class="grid grid-cols-1 gap-4">
+                    <div class="app-card flex items-start space-x-4 p-4 border-l-4 border-green-500">
+                        <i data-lucide="file-text" class="w-6 h-6 text-green-600 shrink-0 mt-1"></i>
+                        <div>
+                            <h4 class="font-semibold text-base">Export PDF A4 Pro</h4>
+                            <p class="text-sm text-gray-600">Conversion en haute résolution, parfaite pour l'impression ou l'envoi digital.</p>
+                        </div>
+                    </div>
+                    <div class="app-card flex items-start space-x-4 p-4 border-l-4 border-purple-500">
+                        <i data-lucide="layers" class="w-6 h-6 text-purple-600 shrink-0 mt-1"></i>
+                        <div>
+                            <h4 class="font-semibold text-base">20 Templates Élégants</h4> <p class="text-sm text-gray-600">Choix de 20 designs professionnels modernes et structurés, adaptés à tous les secteurs.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="text-center text-xs text-gray-400 mt-10">
+                &copy; Deo ATODJINOU - DeOS
+            </div>
+        </section>
+
+            <section id="creation" class="page-transition hidden pt-4">
+            
+            <h2 class="text-3xl font-bold text-center text-gray-900 mb-4 flex items-center justify-center"><i data-lucide="edit" class="w-7 h-7 mr-3 text-indigo-600"></i> 1. Saisissez vos Informations</h2>
+            
+            <div class="flex space-x-3 mt-4 mb-6">
+                 <button onclick="saveCVData()" class="w-1/3 py-3 bg-gray-900 text-white rounded-xl font-medium hover:bg-gray-700 transition-colors flex items-center justify-center text-sm shadow-md">
+                    <i data-lucide="save" class="w-4 h-4 mr-1.5"></i> Sauver
+                </button>
+                <button onclick="navigateTo('templates')" class="w-1/3 py-3 bg-gray-100 text-gray-800 rounded-xl font-medium hover:bg-gray-200 transition-colors flex items-center justify-center text-sm shadow-md">
+                    <i data-lucide="layout" class="w-4 h-4 mr-1.5"></i> Template
+                </button>
+                <button onclick="navigateTo('download')" class="w-1/3 py-3 bg-indigo-600 text-white rounded-xl font-semibold hover:bg-indigo-700 transition-colors flex items-center justify-center text-sm shadow-lg shadow-indigo-500/50">
+                    <i data-lucide="download" class="w-4 h-4 mr-1.5"></i> Export
+                </button>
+            </div>
+
+            <div id="form-scroll-content" class="space-y-6 pb-10">
+                
+                <div class="app-card space-y-4">
+                    <h3 class="text-xl font-semibold flex items-center text-indigo-600"><i data-lucide="user" class="w-5 h-5 mr-3"></i> Infos Personnelles</h3>
+                    <input type="text" id="input-nom" placeholder="Nom Complet " class="input-field" oninput="updateCV()">
+                    <input type="text" id="input-titre" placeholder="Titre " class="input-field" oninput="updateCV()">
+                    <textarea id="input-profil-summary" placeholder="Résumé de Profil (3-4 lignes max) - Soyez percutant !" class="input-field h-24" oninput="updateCV()"></textarea>
+
+                    <h4 class="font-semibold text-gray-700 pt-3 border-t">Contact & Photo</h4>
+                    <input type="email" id="input-email" placeholder="Email professionnel" class="input-field" oninput="updateCV()">
+                    <input type="tel" id="input-phone" placeholder="Téléphone" class="input-field" oninput="updateCV()">
+                    <input type="text" id="input-location" placeholder="Localisation " class="input-field" oninput="updateCV()">
+                    
+                    <div class="flex items-center space-x-4 mt-4">
+                        <div id="photo-preview" class="w-14 h-14 rounded-full bg-gray-200 flex items-center justify-center overflow-hidden border border-gray-300 shrink-0">
+                            <i data-lucide="user" class="w-5 h-5 text-gray-400"></i>
+                        </div>
+                        <label for="input-photo" class="px-4 py-2 bg-gray-900 text-white text-sm rounded-lg cursor-pointer hover:bg-gray-700 transition-colors shrink-0 shadow-md">
+                            <i data-lucide="aperture" class="w-4 h-4 inline-block mr-1"></i> Ajouter Photo
+                            <input type="file" id="input-photo" class="hidden" accept="image/*" onchange="handlePhotoUpload(event)">
+                        </label>
+                        <span class="text-xs text-gray-500">Max 500ko</span>
+                    </div>
+                </div>
+
+                <div class="app-card space-y-4">
+                    <h3 class="text-xl font-semibold flex items-center text-indigo-600"><i data-lucide="briefcase" class="w-5 h-5 mr-3"></i> Expérience Professionnelle</h3>
+                    <div id="experience-fields" class="space-y-4">
+                        </div>
+                    <button onclick="addExperienceField()" class="text-indigo-600 border border-indigo-600 rounded-xl w-full py-2 hover:bg-indigo-50 transition-colors font-medium text-sm flex items-center justify-center"><i data-lucide="plus" class="w-4 h-4 mr-1"></i> Ajouter une Position</button>
+                </div>
+                
+                <div class="app-card space-y-4">
+                    <h3 class="text-xl font-semibold flex items-center text-indigo-600"><i data-lucide="code" class="w-5 h-5 mr-3"></i> Compétences & Outils</h3>
+                    <textarea id="input-skills" placeholder="Listez vos compétences, séparées par des virgules (Ex: PHP/Laravel, JS ES6+, SASS, Cloud Azure)" class="input-field h-20" oninput="updateCV()"></textarea>
+                </div>
+
+                <div class="app-card space-y-4">
+                    <h3 class="text-xl font-semibold flex items-center text-indigo-600"><i data-lucide="book-open" class="w-5 h-5 mr-3"></i> Formation Académique</h3>
+                    <div id="formation-fields" class="space-y-4">
+                        </div>
+                    <button onclick="addFormationField()" class="text-indigo-600 border border-indigo-600 rounded-xl w-full py-2 hover:bg-indigo-50 transition-colors font-medium text-sm flex items-center justify-center"><i data-lucide="plus" class="w-4 h-4 mr-1"></i> Ajouter une Formation</button>
+                </div>
+
+            </div>
+        </section>
+
+        <section id="sauvegarde" class="page-transition hidden pt-10">
+            <h2 class="text-3xl font-bold mb-6 text-center text-gray-900 flex items-center justify-center"><i data-lucide="save" class="w-7 h-7 mr-3 text-purple-600"></i> 2. Mes CVs Sauvegardés</h2>
+            
+            <div id="cv-list-container" class="space-y-4">
+                </div>
+
+            <div id="no-saved-cvs" class="app-card text-center text-gray-500 hidden mt-8">
+                <i data-lucide="file-text" class="w-8 h-8 mx-auto text-gray-400"></i>
+                <p class="mt-2 text-md">Aucun CV sauvegardé localement.</p>
+                <button onclick="navigateTo('creation')" class="mt-4 px-4 py-2 bg-indigo-100 text-indigo-600 rounded-lg text-sm font-medium">Créer un nouveau CV</button>
+            </div>
+        </section>
+
+
+        <section id="templates" class="page-transition hidden pt-10">
+            <h2 class="text-3xl font-bold mb-6 text-center text-gray-900 flex items-center justify-center"><i data-lucide="layout" class="w-7 h-7 mr-3 text-red-600"></i> 3. Choisissez votre Template</h2>
+            
+            <div id="template-grid" class="grid grid-cols-1 gap-6">
+                </div>
+            <button onclick="navigateTo('creation')" class="mt-6 w-full py-3 bg-indigo-600 text-white rounded-xl font-medium hover:bg-indigo-700 transition-colors text-lg shadow-lg shadow-indigo-500/50">
+                <i data-lucide="chevron-left" class="w-5 h-5 inline-block mr-2"></i> Retour à la Modification
+            </button>
+        </section>
+
+        <section id="download" class="page-transition hidden pt-10">
+            <h2 class="text-3xl font-bold mb-4 text-center text-gray-900 flex items-center justify-center"><i data-lucide="download" class="w-7 h-7 mr-3 text-green-600"></i> 4. Finalisation & Export</h2>
+            
+            <div class="app-card space-y-6">
+                <div class="text-center text-md text-gray-600">
+                    <p>Votre CV (Template : <span id="final-template-name" class="font-bold text-indigo-600"></span>) est prêt.</p>
+                    <p class="font-semibold text-sm mt-1">Exportation en Haute Résolution garantie.</p>
+                </div>
+                
+                <div class="h-80 overflow-hidden rounded-xl border-4 border-gray-100 bg-gray-50 flex justify-center items-center relative">
+                    <div id="final-cv-preview" class="transform scale-[0.45] origin-top-center shadow-2xl transition-shadow duration-300">
+                        </div>
+                </div>
+
+                <div class="download-controls flex justify-center space-x-4">
+                    <button id="btn-pdf" onclick="exportCV('pdf')" class="w-1/2 py-3 bg-red-600 text-white font-semibold rounded-xl shadow-lg shadow-red-500/50 hover:bg-red-700 transition-all duration-300 flex items-center justify-center">
+                        <i data-lucide="file-text" class="w-5 h-5 mr-2"></i> Télécharger PDF
+                    </button>
+                    <button id="btn-png" onclick="exportCV('png')" class="w-1/2 py-3 bg-purple-600 text-white font-semibold rounded-xl shadow-lg shadow-purple-500/50 hover:bg-purple-700 transition-all duration-300 flex items-center justify-center">
+                        <i data-lucide="aperture" class="w-5 h-5 mr-2"></i> Télécharger PNG
+                    </button>
+                </div>
+
+                <button onclick="navigateTo('creation')" class="w-full mt-4 py-2 text-indigo-600 border border-indigo-600 rounded-xl hover:bg-indigo-50 transition-colors font-medium text-sm">
+                    Retour à la Modification
+                </button>
+            </div>
+        </section>
+        
+        <section id="apropos" class="page-transition hidden pt-10">
+            <div class="app-card space-y-6">
+                <h2 class="text-3xl font-bold mb-4 text-center text-gray-900 flex items-center justify-center"><i data-lucide="users" class="w-7 h-7 mr-3 text-gray-500"></i> À Propos</h2>
+                <p class="text-md text-gray-700 leading-relaxed">
+                    Développé par **DeOS**, cette solution est l'aboutissement de notre expertise en design d'interface et en conversion digitale. Notre mission est de vous offrir l'outil le plus fluide, professionnel et élégant pour maximiser votre impact carrière.
+                </p>
+                <div class="border-t pt-4 text-sm text-gray-500">
+                    <p class="font-medium text-gray-700">Version : 2.0.5 (20 Templates Premium & Sync Audio)</p>
+                    <p>Développeur : Deo ATODJINOU</p>
+                </div>
+            </div>
+        </section>
+
+    </main>
+    
+    <footer class="glass-nav-bottom fixed bottom-0 left-0 right-0 z-50 h-auto p-2 shadow-2xl">
+        <div class="flex justify-around max-w-xl mx-auto">
+            <button onclick="navigateTo('accueil')" class="nav-item flex flex-col items-center p-2 text-gray-500 hover:text-indigo-600 transition-colors">
+                <i data-lucide="home" class="w-6 h-6"></i>
+                <span class="text-xs font-medium mt-0.5">Accueil</span>
+            </button>
+            <button onclick="navigateTo('creation')" class="nav-item flex flex-col items-center p-2 text-gray-500 hover:text-indigo-600 transition-colors">
+                <i data-lucide="edit" class="w-6 h-6"></i>
+                <span class="text-xs font-medium mt-0.5">Créer</span>
+            </button>
+            <button onclick="navigateTo('sauvegarde')" class="nav-item flex flex-col items-center p-2 text-gray-500 hover:text-indigo-600 transition-colors">
+                <i data-lucide="save" class="w-6 h-6"></i>
+                <span class="text-xs font-medium mt-0.5">Sauv.</span>
+            </button>
+            <button onclick="navigateTo('templates')" class="nav-item flex flex-col items-center p-2 text-gray-500 hover:text-indigo-600 transition-colors">
+                <i data-lucide="layout" class="w-6 h-6"></i>
+                <span class="text-xs font-medium mt-0.5">Templates</span>
+            </button>
+            <button onclick="navigateTo('download')" class="nav-item flex flex-col items-center p-2 text-gray-500 hover:text-indigo-600 transition-colors">
+                <i data-lucide="download" class="w-6 h-6"></i>
+                <span class="text-xs font-medium mt-0.5">Export</span>
+            </button>
+        </div>
+    </footer>
+    
+    <div id="toast-container" class="fixed top-4 left-1/2 transform -translate-x-1/2 z-[10000] space-y-2">
+        </div>
+</div>
+    <script>
+    // =========================================================
+    // JAVASCRIPT: LOGIQUE D'APPLICATION, ÉTAT ET FLUIDITÉ
+    // =========================================================
+
+    // État Global de Démarrage (Vierge par défaut)
+    const BLANK_CV_DATA = {
+        id: Date.now(),
+        name: 'Nouveau CV',
+        photo: '',
+        nom: '',
+        titre: '',
+        'profil-summary': '',
+        email: '',
+        phone: '',
+        location: '',
+        skills: '',
+        experiences: [],
+        formations: []
+    };
+    
+    let appState = {
+        currentPage: 'accueil',
+        currentTemplateId: 'template1', 
+        cvData: JSON.parse(JSON.stringify(BLANK_CV_DATA)), 
+        experienceIdCounter: 1,
+        formationIdCounter: 1
+    };
+
+    const MOCK_EXPERIENCE = {
+        titre: '',
+        entreprise: '',
+        duree: '',
+        description: ''
+    };
+    
+    const MOCK_FORMATION = {
+        titre: '',
+        etablissement: '',
+        annee: ''
+    };
+    
+    // =========================================================
+    // --- DÉFINITIONS DES 20 TEMPLATES PROFESSIONNELS ---
+    // =========================================================
+    const templates = {
+        // EXISTANTS (9)
+        'template1': { name: 'The Zenith (Moderne)', accent: '#4f46e5', bgColor: 'white', font: 'Inter, sans-serif', description: 'Classique, bordures Indigo foncé. Idéal pour le Tech.', render: renderTemplate1 },
+        'template2': { name: 'The Obsidian (Noir & Or)', accent: '#facc15', bgColor: '#1f2937', font: 'Inter, sans-serif', description: 'Fond sombre (Bleu Nuit), texte clair, accent Or. Très Luxueux.', render: renderTemplate2 },
+        'template3': { name: 'The Executive (Beige)', accent: '#4b5563', bgColor: '#f5f5dc', font: 'Inter, sans-serif', description: 'Fond Beige léger, accent Gris Foncée. Classique et doux.', render: renderTemplate3 },
+        'template4': { name: 'The Purple Ascent', accent: '#8b5cf6', bgColor: 'white', font: 'Inter, sans-serif', description: 'Design créatif avec des blocs violets clairs. Pour les créatifs et le marketing.', render: renderTemplate1 }, 
+        'template5': { name: 'Minimalist Pro (Clean)', accent: '#1f2937', bgColor: 'white', font: 'Inter, sans-serif', description: 'Design épuré, fort contraste typographique et minimaliste. Parfait pour les managers.', render: renderTemplate5 },
+        'template6': { name: 'The Engineer (Sidebar Blue)', accent: '#3b82f6', bgColor: 'white', font: 'Monospace, Inter, sans-serif', description: 'Structure en deux tons (bleu clair), très structurée. Idéal pour l\'ingénierie et la R&D.', render: renderTemplate6 },
+        'template7': { name: 'Creative Architect', accent: '#14b8a6', bgColor: '#f0fdfa', font: 'Inter, sans-serif', description: 'En-tête audacieux, mise en page moderne en blocs. Pour le design, l\'UX/UI ou le marketing.', render: renderTemplate7 },
+        'template8': { name: 'Academic Timeline', accent: '#b91c1c', bgColor: 'white', font: 'Georgia, serif', description: 'Mise en page formelle basée sur une ligne du temps. Idéal pour l\'académique ou la finance.', render: renderTemplate8 },
+        'template9': { name: 'Green Corporate', accent: '#10b981', bgColor: 'white', font: 'Inter, sans-serif', description: 'Élégant, en-tête simple et accent vert professionnel. Classique et corporate.', render: renderTemplate9 },
+        
+        // NOUVEAUX TEMPLATES PREMIUM (11 Ajoutés pour un total de 20)
+        'template10': { name: 'The Data Scientist', accent: '#06b6d4', bgColor: 'white', font: 'Inter, sans-serif', description: 'Minimaliste, colonne unique, met l\'accent sur les compétences techniques et analytiques.', render: renderTemplate10 },
+        'template11': { name: 'The Consultant (Red Line)', accent: '#ef4444', bgColor: 'white', font: 'Inter, sans-serif', description: 'Hiérarchie forte avec une ligne rouge verticale. Idéal pour le conseil et la gestion.', render: renderTemplate11 },
+        'template12': { name: 'The Modern Art', accent: '#f97316', bgColor: 'white', font: 'Inter, sans-serif', description: 'Bande d\'en-tête pleine largeur orange. Design audacieux et impactant.', render: renderTemplate12 },
+        'template13': { name: 'The Classic Banker', accent: '#374151', bgColor: 'white', font: 'Georgia, serif', description: 'Très formel, police Serif, pas d\'icônes. Pour la finance, le droit ou la haute direction.', render: renderTemplate13 },
+        'template14': { name: 'The UX/UI Flow (Pink Sidebar)', accent: '#ec4899', bgColor: '#fdf2f8', font: 'Inter, sans-serif', description: 'Sidebar rose clair pour la photo et le contact. Design créatif et spacieux.', render: renderTemplate14 },
+        'template15': { name: 'The Technical Grid', accent: '#10b981', bgColor: 'white', font: 'Monospace, sans-serif', description: 'Séparation par grilles et lignes fines. Idéal pour les développeurs et ingénieurs.', render: renderTemplate15 },
+        'template16': { name: 'The Midnight (Dark Mode 2)', accent: '#a78bfa', bgColor: '#0f172a', font: 'Inter, sans-serif', description: 'Design sombre avec un accent violet vibrant. Moderne et élégant.', render: renderTemplate16 },
+        'template17': { name: 'The Educator', accent: '#22c55e', bgColor: 'white', font: 'Inter, sans-serif', description: 'Mise en page centrée sur la formation et les certifications. Vert éducation.', render: renderTemplate17 },
+        'template18': { name: 'The Freelancer', accent: '#f59e0b', bgColor: '#fffbeb', font: 'Inter, sans-serif', description: 'Couleur de fond légèrement ambrée pour un look "fait main". Met l\'accent sur le profil.', render: renderTemplate18 },
+        'template19': { name: 'The Globalist', accent: '#3b82f6', bgColor: 'white', font: 'Inter, sans-serif', description: 'Mise en page bilingue simulée et focalisée sur le contexte international (bleu ONU).', render: renderTemplate19 },
+        'template20': { name: 'The Professional Split', accent: '#6366f1', bgColor: 'white', font: 'Inter, sans-serif', description: 'Deux colonnes 50/50 avec une ligne de séparation verticale. Équilibré et formel.', render: renderTemplate20 },
+    };
+    
+    // Durée de l'animation de splash screen (1.8 secondes pour la nouvelle chorégraphie)
+    const SPLASH_DURATION = 1800; 
+    let audioPlayed = false;
+
+    /**
+     * Joue une séquence mélodique qui dure 1.8s pour se synchroniser avec le splash screen.
+     */
+    async function playStartupSound() {
+        if (typeof Tone === 'undefined' || audioPlayed) return;
+
+        try {
+            await Tone.start();
+            audioPlayed = true; 
+            
+            const synth = new Tone.PolySynth(Tone.Synth, {
+                oscillator: { type: "sine" },
+                envelope: { attack: 0.05, decay: 0.3, sustain: 0.1, release: 1.4 } 
+            }).toDestination();
+
+            const now = Tone.context.currentTime;
+            synth.triggerAttackRelease("C4", "8n", now);
+            synth.triggerAttackRelease("E4", "8n", now + 0.3);
+            synth.triggerAttackRelease("G4", "8n", now + 0.6);
+            synth.triggerAttackRelease("C5", "4n", now + 0.8); 
+            
+        } catch (e) {
+            console.warn("Audio context not supported or failed to start:", e);
+        }
+    }
+    
+    /**
+     * Gère la transition entre les pages.
+     */
+    function navigateTo(pageId) {
+        const pages = document.querySelectorAll('#page-container section');
+
+        pages.forEach(page => {
+            page.classList.remove('page-visible');
+            page.classList.add('hidden');
+        });
+
+        const targetPage = document.getElementById(pageId);
+        if (targetPage) {
+            targetPage.classList.remove('hidden');
+            targetPage.classList.add('page-visible');
+        }
+
+        appState.currentPage = pageId;
+        window.scrollTo(0, 0); 
+        
+        // Mettre à jour l'état de la page
+        if (pageId === 'creation') {
+            updateFormFields(); 
+            updateCV();
+        } else if (pageId === 'download') {
+            document.getElementById('final-template-name').textContent = templates[appState.currentTemplateId].name;
+            updateCV(true);
+        } else if (pageId === 'sauvegarde') {
+            loadSavedCVsList();
+        } else if (pageId === 'templates') {
+            setupTemplateSelector();
+        }
+        
+        // Mettre en évidence l'icône de navigation active
+        document.querySelectorAll('.nav-item').forEach(btn => {
+            const btnPage = btn.onclick.toString().match(/navigateTo\('([^']+)'\)/);
+            if (btnPage && btnPage[1] === pageId) {
+                btn.classList.add('text-indigo-600');
+                btn.classList.remove('text-gray-500');
+            } else {
+                btn.classList.remove('text-indigo-600');
+                btn.classList.add('text-gray-500');
+            }
+        });
+    }
+    // =========================================================
+    // FONCTIONS DE GESTION DU CV (Data & Rendu)
+    // (Les fonctions updateStateFromForm, updateCV, updateFormFields, 
+    // updatePhotoPreview, handlePhotoUpload, addExperienceField, 
+    // addFormationField, removeField restent identiques)
+    // =========================================================
+
+    /**
+     * Met à jour les données de l'état global à partir du formulaire.
+     */
+    function updateStateFromForm() {
+        // 1. Mise à jour des champs simples
+        const keys = ['nom', 'titre', 'email', 'phone', 'location', 'skills', 'profil-summary'];
+        keys.forEach(key => {
+            const input = document.getElementById(`input-${key}`);
+            if (input) {
+                appState.cvData[key] = input.value;
+            }
+        });
+
+        // 2. Mise à jour des expériences (dynamique)
+        appState.cvData.experiences = Array.from(document.querySelectorAll('.exp-bloc')).map(bloc => ({
+            id: parseInt(bloc.dataset.id),
+            titre: bloc.querySelector('[id^="exp-titre"]').value || '',
+            entreprise: bloc.querySelector('[id^="exp-entreprise"]').value || '',
+            duree: bloc.querySelector('[id^="exp-duree"]').value || '',
+            description: bloc.querySelector('[id^="exp-description"]').value || '',
+        })).filter(exp => exp.titre || exp.description); 
+        
+        // 3. Mise à jour des formations (dynamique)
+        appState.cvData.formations = Array.from(document.querySelectorAll('.form-bloc')).map(bloc => ({
+            id: parseInt(bloc.dataset.id),
+            titre: bloc.querySelector('[id^="form-titre"]').value || '',
+            etablissement: bloc.querySelector('[id^="form-etablissement"]').value || '',
+            annee: bloc.querySelector('[id^="form-annee"]').value || '',
+        })).filter(form => form.titre || form.etablissement);
+        
+        // 4. Ajouter l'ID du template dans les données pour la sauvegarde
+        appState.cvData.templateId = appState.currentTemplateId;
+    }
+
+    /**
+     * Met à jour l'affichage du CV.
+     */
+    function updateCV() {
+        updateStateFromForm();
+
+        const template = templates[appState.currentTemplateId];
+        const data = appState.cvData;
+        
+        const targets = [
+            document.getElementById('cv-preview-container-hidden'),
+            document.getElementById('final-cv-preview')
+        ].filter(el => el);
+
+        if (template && template.render) {
+            const htmlContent = template.render(data, template.accent, template.bgColor, template.font);
+            targets.forEach(target => {
+                target.innerHTML = htmlContent;
+                target.style.fontFamily = template.font;
+                target.style.backgroundColor = template.bgColor;
+                target.style.color = (template.bgColor === '#1f2937' || template.bgColor === '#0f172a') ? 'white' : 'black';
+            });
+        }
+        if (window.lucide) window.lucide.createIcons({ parent: document.getElementById('cv-preview-container-hidden') });
+        if (window.lucide) window.lucide.createIcons({ parent: document.getElementById('final-cv-preview') });
+    }
+
+    /**
+     * Rempli le formulaire avec les données de l'état (appelé après chargement).
+     */
+    function updateFormFields() {
+        const data = appState.cvData;
+
+        // 1. Remplir les champs simples
+        const simpleFields = ['nom', 'titre', 'email', 'phone', 'location', 'skills', 'profil-summary'];
+        simpleFields.forEach(key => {
+            const input = document.getElementById(`input-${key}`);
+            if (input) {
+                input.value = data[key] || '';
+            }
+        });
+        
+        // 2. Mettre à jour la photo
+        updatePhotoPreview(data.photo);
+
+        // 3. Remplir les expériences
+        const expContainer = document.getElementById('experience-fields');
+        expContainer.innerHTML = '';
+        data.experiences.forEach(exp => addExperienceField(exp, false));
+        if (data.experiences.length === 0) addExperienceField(MOCK_EXPERIENCE, false);
+
+        // 4. Remplir les formations
+        const formContainer = document.getElementById('formation-fields');
+        formContainer.innerHTML = '';
+        data.formations.forEach(form => addFormationField(form, false));
+        if (data.formations.length === 0) addFormationField(MOCK_FORMATION, false);
+    }
+
+
+    /**
+     * Met à jour l'affichage de la photo.
+     */
+    function updatePhotoPreview(photoBase64) {
+        const photoPreview = document.getElementById('photo-preview');
+        if (photoBase64) {
+            photoPreview.innerHTML = `<img src="${photoBase64}" alt="Photo Profil" class="w-full h-full object-cover">`;
+            appState.cvData.photo = photoBase64;
+        } else {
+            photoPreview.innerHTML = `<i data-lucide="user" class="w-5 h-5 text-gray-400"></i>`;
+            appState.cvData.photo = '';
+        }
+        if (window.lucide) window.lucide.createIcons(); 
+    }
+
+    // Gère le téléchargement de la photo (Base64)
+    function handlePhotoUpload(event) {
+        const file = event.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                updatePhotoPreview(e.target.result);
+                updateCV();
+            };
+            reader.readAsDataURL(file);
+            showNotification('Photo ajoutée', 'La photo est prête à être affichée sur votre CV.', 'green');
+        }
+    }
+    
+    // Ajout dynamique d'un bloc Expérience
+    function addExperienceField(data = MOCK_EXPERIENCE, update = true) {
+        const id = data.id || appState.experienceIdCounter++;
+        const container = document.getElementById('experience-fields');
+        
+        const expDiv = document.createElement('div');
+        expDiv.className = 'exp-bloc p-3 border border-gray-200 rounded-xl space-y-2 relative';
+        expDiv.dataset.id = id;
+        
+        if (!data.id) appState.experienceIdCounter = id + 1;
+
+        expDiv.innerHTML = `
+            <div onclick="removeField(this.closest('.exp-bloc'))" class="absolute top-2 right-2 p-1 text-red-500 cursor-pointer hover:bg-red-50 rounded-full transition-colors" title="Supprimer">
+                <i data-lucide="trash-2" class="w-4 h-4"></i>
+            </div>
+            <input type="text" id="exp-titre-${id}" placeholder="Titre (Ex: Développeur)" class="input-field-small" value="${data.titre || ''}" oninput="updateCV()">
+            <input type="text" id="exp-entreprise-${id}" placeholder="Entreprise" class="input-field-small" value="${data.entreprise || ''}" oninput="updateCV()">
+            <input type="text" id="exp-duree-${id}" placeholder="Durée (Ex: 2020 - 2023)" class="input-field-small" value="${data.duree || ''}" oninput="updateCV()">
+            <textarea id="exp-description-${id}" placeholder="Description des missions clés" class="input-field-small h-12" oninput="updateCV()">${data.description || ''}</textarea>
+        `;
+        container.appendChild(expDiv);
+        
+        if (update) updateCV();
+        if (window.lucide) window.lucide.createIcons(); 
+    }
+
+    // Ajout dynamique d'un bloc Formation
+    function addFormationField(data = MOCK_FORMATION, update = true) {
+        const id = data.id || appState.formationIdCounter++;
+        const container = document.getElementById('formation-fields');
+        
+        const formDiv = document.createElement('div');
+        formDiv.className = 'form-bloc p-3 border border-gray-200 rounded-xl space-y-2 relative';
+        formDiv.dataset.id = id;
+        
+        if (!data.id) appState.formationIdCounter = id + 1;
+
+        formDiv.innerHTML = `
+            <div onclick="removeField(this.closest('.form-bloc'))" class="absolute top-2 right-2 p-1 text-red-500 cursor-pointer hover:bg-red-50 rounded-full transition-colors" title="Supprimer">
+                <i data-lucide="trash-2" class="w-4 h-4"></i>
+            </div>
+            <input type="text" id="form-titre-${id}" placeholder="Titre (Ex: Master 2)" class="input-field-small" value="${data.titre || ''}" oninput="updateCV()">
+            <input type="text" id="form-etablissement-${id}" placeholder="Établissement" class="input-field-small" value="${data.etablissement || ''}" oninput="updateCV()">
+            <input type="text" id="form-annee-${id}" placeholder="Année de diplôme" class="input-field-small" value="${data.annee || ''}" oninput="updateCV()">
+        `;
+        container.appendChild(formDiv);
+        
+        if (update) updateCV();
+        if (window.lucide) window.lucide.createIcons(); 
+    }
+
+    // Suppression générique d'un bloc de formulaire
+    function removeField(bloc) {
+        if (bloc) {
+            bloc.remove();
+            updateCV();
+            showNotification('Champ supprimé', 'Le bloc a été retiré de votre CV.', 'red');
+        }
+    }
+    // =========================================================
+    // FONCTIONS DE RENDU DES TEMPLATES (CV PROFESSIONNEL)
+    // =========================================================
+
+    // Helper pour formater les compétences
+    const formatSkills = (skills) => skills.split(',').map(s => s.trim()).filter(s => s).map(s => `<span class="inline-block cv-text-xs px-2 py-0.5 rounded-sm font-medium text-gray-800 border" style="border-color: #ddd; margin: 2px 4px 2px 0; background-color: #f7f7f7;">${s}</span>`).join('');
+
+    // ================== TEMPLATE 1 & 4 (Zenith) ==================
+    function renderTemplate1(data, accent, bgColor) {
+        const skillsHTML = formatSkills(data.skills, accent);
+        const textColor = (bgColor === '#1f2937' || bgColor === '#0f172a') ? 'white' : 'black';
+        const contactTextColor = textColor === 'white' ? '#d1d5db' : '#4b5563';
+        const descriptionTextColor = textColor === 'white' ? '#e5e7eb' : '#374151';
+
+        return `
+            <div class="p-8 font-sans grid grid-cols-3 gap-8 text-gray-800 h-[297mm] overflow-hidden" style="background-color: ${bgColor}; color: ${textColor};">
+                <div class="col-span-1 pr-4">
+                    <div class="mb-6">
+                        ${data.photo ? `<img src="${data.photo}" alt="Photo Profil" class="w-24 h-24 rounded-full object-cover mb-4 border-2 mx-auto" style="border-color: ${accent};">` : ''}
+                        <h1 class="text-3xl font-black text-center" style="color: ${textColor};">${data.nom || 'Votre Nom'}</h1>
+                        <p class="cv-text-sm font-normal text-center mt-1" style="color: ${contactTextColor};">${data.titre || 'Votre Titre'}</p>
+                    </div>
+                    
+                    <h2 class="cv-text-sm font-bold tracking-wider uppercase pt-2 border-t mt-4 flex items-center" style="color: ${accent}; border-color: ${accent}; padding-bottom: 5px; margin-bottom: 10px;"><i data-lucide="phone" class="cv-icon-md mr-1"></i> Contact</h2>
+                    <div class="space-y-2">
+                        <p class="cv-text-xs flex items-center"><i data-lucide="mail" class="cv-icon-sm mr-2" style="color: ${accent};"></i> ${data.email || 'email@exemple.com'}</p>
+                        <p class="cv-text-xs flex items-center"><i data-lucide="phone" class="cv-icon-sm mr-2" style="color: ${accent};"></i> ${data.phone || '+33 00 00 00 00'}</p>
+                        <p class="cv-text-xs flex items-center"><i data-lucide="map-pin" class="cv-icon-sm mr-2" style="color: ${accent};"></i> ${data.location || 'Ville, Pays'}</p>
+                    </div>
+
+                    <h2 class="cv-text-sm font-bold tracking-wider uppercase pt-2 border-t mt-4 flex items-center" style="color: ${accent}; border-color: ${accent}; padding-bottom: 5px; margin-bottom: 10px;"><i data-lucide="code" class="cv-icon-md mr-1"></i> Compétences</h2>
+                    <div class="flex flex-wrap -mx-1">
+                        ${skillsHTML || `<p class="cv-text-xs" style="color: ${contactTextColor};">Ajoutez vos compétences clés.</p>`}
+                    </div>
+
+                    <h2 class="cv-text-sm font-bold tracking-wider uppercase pt-2 border-t mt-4 flex items-center" style="color: ${accent}; border-color: ${accent}; padding-bottom: 5px; margin-bottom: 10px;"><i data-lucide="book-open" class="cv-icon-md mr-1"></i> Formation</h2>
+                    ${data.formations.length > 0 ? data.formations.map(form => `
+                        <div class="mb-3">
+                            <h4 class="cv-text-sm font-semibold" style="color: ${textColor};">${form.titre}</h4>
+                            <p class="cv-text-xs font-light" style="color: ${contactTextColor};">${form.etablissement}</p>
+                            <p class="cv-text-xs" style="color: ${contactTextColor};">${form.annee}</p>
+                        </div>
+                    `).join('') : `<p class="cv-text-xs" style="color: ${contactTextColor};">Ajoutez vos diplômes ici.</p>`}
+                </div>
+
+                <div class="col-span-2 pl-4 border-l" style="border-color: ${accent};">
+                    <h3 class="text-xl font-bold mb-3 flex items-center" style="color: ${accent};"><i data-lucide="user" class="w-4 h-4 mr-2"></i> Profil</h3>
+                    <p class="cv-text-base mb-6" style="color: ${descriptionTextColor};">${data['profil-summary'] || 'Un résumé percutant qui attire l\'attention des recruteurs et met en évidence vos atouts majeurs.'}</p>
+
+                    <h3 class="text-xl font-bold mb-3 flex items-center" style="color: ${accent};"><i data-lucide="briefcase" class="w-4 h-4 mr-2"></i> Expérience Professionnelle</h3>
+                    <div class="space-y-4">
+                        ${data.experiences.length > 0 ? data.experiences.map(exp => `
+                            <div class="relative pl-3 border-l" style="border-color: ${accent};">
+                                <span class="absolute -left-1.5 w-3 h-3 rounded-full" style="background-color: ${accent};"></span>
+                                <h4 class="cv-text-base font-bold" style="color: ${textColor};">${exp.titre}</h4>
+                                <p class="cv-text-sm font-semibold mt-0.5" style="color: ${accent};">${exp.entreprise} <span class="font-light" style="color: ${contactTextColor};">| ${exp.duree}</span></p>
+                                <p class="cv-text-xs mt-2" style="color: ${descriptionTextColor};">${exp.description}</p>
+                            </div>
+                        `).join('') : `<p class="cv-text-base" style="color: ${descriptionTextColor};">Ajoutez vos expériences professionnelles clés.</p>`}
+                    </div>
+                </div>
+            </div>
+        `;
+    }
+
+    // ================== TEMPLATE 2 (Obsidian - Dark Mode) ==================
+    function renderTemplate2(data, accent, bgColor) {
+        const skillsHTML = data.skills.split(',').map(s => s.trim()).filter(s => s).map(s => `<span class="inline-block cv-text-xs px-2 py-0.5 rounded-sm font-medium text-white border" style="border-color: #4b5563; margin: 2px 4px 2px 0; background-color: #374151;">${s}</span>`).join('');
+        const textColor = 'white';
+        const subTextColor = '#9ca3af';
+
+        return `
+            <div class="p-8 font-sans h-[297mm] overflow-hidden" style="background-color: ${bgColor}; color: ${textColor};">
+                <div class="text-center pb-6 border-b" style="border-color: ${accent};">
+                    ${data.photo ? `<img src="${data.photo}" alt="Photo Profil" class="w-20 h-20 rounded-full object-cover mb-3 mx-auto border-2" style="border-color: ${accent};">` : ''}
+                    <h1 class="text-4xl font-extrabold" style="color: ${accent};">${data.nom || 'Votre Nom'}</h1>
+                    <p class="cv-text-base font-light mt-1" style="color: ${subTextColor};">${data.titre || 'Votre Titre Professionnel'}</p>
+                </div>
+
+                <div class="grid grid-cols-3 gap-8 pt-6">
+                    <div class="col-span-1 border-r pr-4" style="border-color: #4b5563;">
+                        <h2 class="cv-text-sm font-bold tracking-wider uppercase mb-3" style="color: ${accent};">Contact</h2>
+                        <div class="space-y-1.5 cv-text-xs" style="color: ${subTextColor};">
+                            <p class="flex items-center"><i data-lucide="mail" class="cv-icon-sm mr-2" style="color: ${accent};"></i> ${data.email || 'email@exemple.com'}</p>
+                            <p class="flex items-center"><i data-lucide="phone" class="cv-icon-sm mr-2" style="color: ${accent};"></i> ${data.phone || '+33 00 00 00 00'}</p>
+                            <p class="flex items-center"><i data-lucide="map-pin" class="cv-icon-sm mr-2" style="color: ${accent};"></i> ${data.location || 'Ville, Pays'}</p>
+                        </div>
+
+                        <h2 class="cv-text-sm font-bold tracking-wider uppercase mt-6 mb-3" style="color: ${accent};">Compétences</h2>
+                        <div class="flex flex-wrap -mx-1">
+                            ${skillsHTML || `<p class="cv-text-xs" style="color: ${subTextColor};">Ajoutez vos compétences clés.</p>`}
+                        </div>
+
+                        <h2 class="cv-text-sm font-bold tracking-wider uppercase mt-6 mb-3" style="color: ${accent};">Formation</h2>
+                        ${data.formations.length > 0 ? data.formations.map(form => `
+                            <div class="mb-3">
+                                <h4 class="cv-text-sm font-semibold" style="color: ${textColor};">${form.titre}</h4>
+                                <p class="cv-text-xs font-light" style="color: ${subTextColor};">${form.etablissement}</p>
+                                <p class="cv-text-xs" style="color: ${subTextColor};">${form.annee}</p>
+                            </div>
+                        `).join('') : `<p class="cv-text-xs" style="color: ${subTextColor};">Ajoutez vos diplômes ici.</p>`}
+                    </div>
+
+                    <div class="col-span-2 pl-4">
+                        <h2 class="cv-text-sm font-bold tracking-wider uppercase mb-3" style="color: ${accent};">Résumé de Profil</h2>
+                        <p class="cv-text-base mb-6" style="color: ${subTextColor};">${data['profil-summary'] || 'Un résumé percutant qui attire l\'attention des recruteurs et met en évidence vos atouts majeurs.'}</p>
+
+                        <h2 class="cv-text-sm font-bold tracking-wider uppercase mb-3" style="color: ${accent};">Expérience Professionnelle</h2>
+                        <div class="space-y-4">
+                            ${data.experiences.length > 0 ? data.experiences.map(exp => `
+                                <div>
+                                    <h4 class="cv-text-base font-bold" style="color: ${textColor};">${exp.titre}</h4>
+                                    <p class="cv-text-sm font-semibold mt-0.5" style="color: ${accent};">${exp.entreprise} <span class="font-light" style="color: ${subTextColor};">| ${exp.duree}</span></p>
+                                    <ul class="cv-text-xs mt-1.5 space-y-1 list-disc pl-4" style="color: ${subTextColor};">
+                                        <li>${exp.description}</li>
+                                    </ul>
+                                </div>
+                            `).join('') : `<p class="cv-text-base" style="color: ${subTextColor};">Ajoutez vos expériences professionnelles clés.</p>`}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `;
+    }
+
+    // ================== TEMPLATE 3 (Executive - Beige Soft) ==================
+    function renderTemplate3(data, accent, bgColor) {
+        const skillsHTML = data.skills.split(',').map(s => s.trim()).filter(s => s).map(s => `<li class="cv-text-xs">${s}</li>`).join('');
+        const textColor = '#1c1c1e';
+        const subTextColor = '#4b5563';
+
+        return `
+            <div class="p-8 font-sans h-[297mm] overflow-hidden" style="background-color: ${bgColor}; color: ${textColor};">
+                
+                <header class="pb-6 border-b mb-6" style="border-color: #d1d5db;">
+                    ${data.photo ? `<img src="${data.photo}" alt="Photo Profil" class="w-20 h-20 rounded-full object-cover mb-4 float-right ml-6">` : ''}
+                    <h1 class="text-4xl font-extrabold" style="color: ${textColor};">${data.nom || 'Votre Nom'}</h1>
+                    <p class="text-xl font-semibold mt-1" style="color: ${accent};">${data.titre || 'Votre Titre Professionnel'}</p>
+                    <p class="cv-text-base mt-3" style="color: ${subTextColor};">${data['profil-summary'] || 'Un résumé percutant qui attire l\'attention des recruteurs...'}</p>
+                    <div class="clear-both"></div>
+                </header>
+
+                <div class="grid grid-cols-3 gap-8">
+                    
+                    <div class="col-span-1 space-y-6">
+                        <div class="p-3 rounded-md" style="background-color: #eceff1;">
+                            <h2 class="cv-text-sm font-bold tracking-wider uppercase mb-2" style="color: ${accent};">Contact</h2>
+                            <div class="space-y-1.5 cv-text-xs" style="color: ${subTextColor};">
+                                <p class="flex items-center"><i data-lucide="mail" class="cv-icon-sm mr-2" style="color: ${accent};"></i> ${data.email || 'email@exemple.com'}</p>
+                                <p class="flex items-center"><i data-lucide="phone" class="cv-icon-sm mr-2" style="color: ${accent};"></i> ${data.phone || '+33 00 00 00 00'}</p>
+                                <p class="flex items-center"><i data-lucide="map-pin" class="cv-icon-sm mr-2" style="color: ${accent};"></i> ${data.location || 'Ville, Pays'}</p>
+                            </div>
+                        </div>
+
+                        <div>
+                            <h2 class="cv-text-sm font-bold tracking-wider uppercase mb-3 border-b" style="color: ${accent}; border-color: #d1d5db;">Compétences</h2>
+                            <ul class="cv-text-xs list-disc pl-4 space-y-1" style="color: ${subTextColor};">
+                                ${skillsHTML || `<li>Ajoutez vos compétences clés.</li>`}
+                            </ul>
+                        </div>
+
+                        <div>
+                            <h2 class="cv-text-sm font-bold tracking-wider uppercase mb-3 border-b" style="color: ${accent}; border-color: #d1d5db;">Formation</h2>
+                            ${data.formations.length > 0 ? data.formations.map(form => `
+                                <div class="mb-3">
+                                    <h4 class="cv-text-sm font-semibold" style="color: ${textColor};">${form.titre}</h4>
+                                    <p class="cv-text-xs font-light" style="color: ${subTextColor};">${form.etablissement}</p>
+                                    <p class="cv-text-xs" style="color: ${accent};">${form.annee}</p>
+                                </div>
+                            `).join('') : `<p class="cv-text-xs" style="color: ${subTextColor};">Ajoutez vos diplômes ici.</p>`}
+                        </div>
+                    </div>
+
+                    <div class="col-span-2 space-y-6">
+                        <h2 class="cv-text-sm font-bold tracking-wider uppercase pb-1 mb-3 border-b" style="color: ${accent}; border-color: #d1d5db;">Expérience Professionnelle</h2>
+                        <div class="space-y-6">
+                            ${data.experiences.length > 0 ? data.experiences.map(exp => `
+                                <div>
+                                    <h4 class="cv-text-base font-bold" style="color: ${textColor};">${exp.titre}</h4>
+                                    <p class="cv-text-sm font-light italic mt-0.5" style="color: ${accent};">${exp.entreprise}</p>
+                                    <p class="cv-text-xs mt-0.5" style="color: ${subTextColor};">${exp.duree}</p>
+                                    <ul class="cv-text-xs mt-2 list-disc pl-4" style="color: ${subTextColor};">
+                                        <li>${exp.description}</li>
+                                    </ul>
+                                </div>
+                            `).join('') : `<p class="cv-text-base" style="color: ${subTextColor};">Ajoutez vos expériences professionnelles clés.</p>`}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `;
+    }
+    
+    // ================== TEMPLATE 5 (Minimalist Pro - Clean) ==================
+    function renderTemplate5(data, accent, bgColor) {
+        const skillsArray = data.skills.split(',').map(s => s.trim()).filter(s => s);
+        const skillsHTML = skillsArray.map(s => `<span class="cv-text-sm font-medium pr-4 border-r mr-4" style="border-color: #e5e7eb;">${s}</span>`).join('');
+        const textColor = '#1f2937';
+        const subTextColor = '#4b5563';
+
+        return `
+            <div class="p-8 font-sans h-[297mm] overflow-hidden" style="background-color: ${bgColor}; color: ${textColor};">
+                
+                <header class="pb-6 mb-6">
+                    <h1 class="text-4xl font-extrabold tracking-tight" style="color: ${textColor};">${data.nom || 'Votre Nom'}</h1>
+                    <p class="text-xl font-light mt-1" style="color: ${accent};">${data.titre || 'Votre Titre Professionnel'}</p>
+                </header>
+                
+                <div class="grid grid-cols-4 gap-6 mb-6 border-b pb-4" style="border-color: #e5e7eb;">
+                    <p class="col-span-1 cv-text-sm font-bold uppercase" style="color: ${accent};">Contact</p>
+                    <div class="col-span-3 cv-text-sm space-y-1" style="color: ${subTextColor};">
+                        <p>${data.email || 'email@exemple.com'} | ${data.phone || '+33 00 00 00 00'}</p>
+                        <p>${data.location || 'Ville, Pays'}</p>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-4 gap-6 mb-6 border-b pb-4" style="border-color: #e5e7eb;">
+                    <p class="col-span-1 cv-text-sm font-bold uppercase" style="color: ${accent};">Profil</p>
+                    <p class="col-span-3 cv-text-base" style="color: ${subTextColor};">${data['profil-summary'] || 'Un résumé percutant qui attire l\'attention des recruteurs et met en évidence vos atouts majeurs.'}</p>
+                </div>
+
+                <div class="grid grid-cols-4 gap-6 mb-6">
+                    <p class="col-span-1 cv-text-sm font-bold uppercase" style="color: ${accent};">Expérience</p>
+                    <div class="col-span-3 space-y-6">
+                        ${data.experiences.length > 0 ? data.experiences.map(exp => `
+                            <div>
+                                <h4 class="cv-text-base font-bold" style="color: ${textColor};">${exp.titre} | ${exp.entreprise}</h4>
+                                <p class="cv-text-sm font-light mt-0.5" style="color: ${accent};">${exp.duree}</p>
+                                <p class="cv-text-xs mt-2" style="color: ${subTextColor};">${exp.description}</p>
+                            </div>
+                        `).join('') : `<p class="cv-text-base" style="color: ${subTextColor};">Ajoutez vos expériences professionnelles clés.</p>`}
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-4 gap-6 mb-6 border-t pt-4" style="border-color: #e5e7eb;">
+                    <p class="col-span-1 cv-text-sm font-bold uppercase" style="color: ${accent};">Formation</p>
+                    <div class="col-span-3 space-y-4">
+                        ${data.formations.length > 0 ? data.formations.map(form => `
+                            <div>
+                                <h4 class="cv-text-sm font-bold" style="color: ${textColor};">${form.titre}</h4>
+                                <p class="cv-text-xs mt-0.5" style="color: ${subTextColor};">${form.etablissement} (${form.annee})</p>
+                            </div>
+                        `).join('') : `<p class="cv-text-sm" style="color: ${subTextColor};">Ajoutez vos diplômes ici.</p>`}
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-4 gap-6 border-t pt-4" style="border-color: #e5e7eb;">
+                    <p class="col-span-1 cv-text-sm font-bold uppercase" style="color: ${accent};">Compétences</p>
+                    <div class="col-span-3 cv-text-sm flex flex-wrap items-center" style="color: ${subTextColor};">
+                        ${skillsHTML || `<p class="cv-text-sm" style="color: ${subTextColor};">Ajoutez vos compétences clés.</p>`}
+                    </div>
+                </div>
+            </div>
+        `;
+    }
+// ================== TEMPLATE 6 (Engineer - Sidebar) ==================
+    function renderTemplate6(data, accent, bgColor) {
+        const skillsHTML = data.skills.split(',').map(s => s.trim()).filter(s => s).map(s => `<p class="cv-text-xs border-b pb-1 mb-1" style="color: #d1d5db; border-color: #4b5563;">${s}</p>`).join('');
+        const mainTextColor = '#1f2937';
+        const sidebarBg = '#eff6ff'; // Blue 50
+        const sidebarTextColor = '#1e3a8a'; // Blue 900
+
+        return `
+            <div class="font-sans grid grid-cols-4 h-[297mm] overflow-hidden">
+                
+                <div class="col-span-1 p-6 space-y-6" style="background-color: ${sidebarBg}; color: ${sidebarTextColor};">
+                    
+                    <div class="text-center">
+                        ${data.photo ? `<img src="${data.photo}" alt="Photo Profil" class="w-20 h-20 rounded-full object-cover mb-3 mx-auto border-4" style="border-color: ${accent};">` : ''}
+                        <h1 class="text-xl font-black" style="color: ${sidebarTextColor};">${data.nom || 'Votre Nom'}</h1>
+                        <p class="cv-text-sm font-semibold mt-1" style="color: ${accent};">${data.titre || 'Votre Titre'}</p>
+                    </div>
+
+                    <div>
+                        <h2 class="cv-text-sm font-bold tracking-wider uppercase border-b mb-2" style="color: ${accent}; border-color: ${accent};">Contact</h2>
+                        <div class="space-y-1 cv-text-xs">
+                            <p class="flex items-center"><i data-lucide="mail" class="cv-icon-sm mr-2"></i> ${data.email || 'email@exemple.com'}</p>
+                            <p class="flex items-center"><i data-lucide="phone" class="cv-icon-sm mr-2"></i> ${data.phone || '+33 00 00 00 00'}</p>
+                            <p class="flex items-center"><i data-lucide="map-pin" class="cv-icon-sm mr-2"></i> ${data.location || 'Ville, Pays'}</p>
+                        </div>
+                    </div>
+
+                    <div>
+                        <h2 class="cv-text-sm font-bold tracking-wider uppercase border-b mb-2" style="color: ${accent}; border-color: ${accent};">Compétences</h2>
+                        <div class="space-y-1">
+                            ${skillsHTML.replace(/#d1d5db/g, '#3b82f6').replace(/#4b5563/g, '#93c5fd') || `<p class="cv-text-xs">Ajoutez vos compétences clés.</p>`}
+                        </div>
+                    </div>
+
+                    <div>
+                        <h2 class="cv-text-sm font-bold tracking-wider uppercase border-b mb-2" style="color: ${accent}; border-color: ${accent};">Formation</h2>
+                        ${data.formations.length > 0 ? data.formations.map(form => `
+                            <div class="mb-3">
+                                <h4 class="cv-text-sm font-semibold">${form.titre}</h4>
+                                <p class="cv-text-xs">${form.etablissement}</p>
+                                <p class="cv-text-xs" style="color: ${accent};">${form.annee}</p>
+                            </div>
+                        `).join('') : `<p class="cv-text-xs">Ajoutez vos diplômes ici.</p>`}
+                    </div>
+                </div>
+
+                <div class="col-span-3 p-8 space-y-8" style="background-color: ${bgColor}; color: ${mainTextColor};">
+                    <div>
+                        <h2 class="cv-text-base font-bold tracking-wider uppercase mb-3 border-b" style="color: ${accent}; border-color: #d1d5db;"><i data-lucide="user" class="w-3 h-3 inline-block mr-1"></i> Profil</h2>
+                        <p class="cv-text-base">${data['profil-summary'] || 'Un résumé percutant qui attire l\'attention des recruteurs...'}</p>
+                    </div>
+
+                    <div>
+                        <h2 class="cv-text-base font-bold tracking-wider uppercase mb-3 border-b" style="color: ${accent}; border-color: #d1d5db;"><i data-lucide="briefcase" class="w-3 h-3 inline-block mr-1"></i> Expérience Professionnelle</h2>
+                        <div class="space-y-6">
+                            ${data.experiences.length > 0 ? data.experiences.map(exp => `
+                                <div class="relative pl-4">
+                                    <h4 class="cv-text-base font-bold">${exp.titre} <span class="float-right font-normal cv-text-sm" style="color: ${accent};">${exp.duree}</span></h4>
+                                    <p class="cv-text-sm font-light mt-0.5">${exp.entreprise}</p>
+                                    <p class="cv-text-xs mt-2">${exp.description}</p>
+                                </div>
+                            `).join('') : `<p class="cv-text-base">Ajoutez vos expériences professionnelles clés.</p>`}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `;
+    }
+
+    // ================== TEMPLATE 7 (Creative Architect) ==================
+    function renderTemplate7(data, accent, bgColor) {
+        const skillsHTML = data.skills.split(',').map(s => s.trim()).filter(s => s).map(s => `<span class="inline-block cv-text-xs px-2 py-1 rounded-sm text-white mr-2 mb-2" style="background-color: ${accent};">${s}</span>`).join('');
+        const mainTextColor = '#1f2937';
+        const subTextColor = '#4b5563';
+
+        return `
+            <div class="font-sans h-[297mm] overflow-hidden" style="background-color: ${bgColor}; color: ${mainTextColor};">
+                
+                <header class="p-8 pb-6" style="background-color: ${accent}; color: white;">
+                    ${data.photo ? `<img src="${data.photo}" alt="Photo Profil" class="w-16 h-16 rounded-full object-cover mb-3 border-2" style="border-color: white;">` : ''}
+                    <h1 class="text-4xl font-black">${data.nom || 'Votre Nom'}</h1>
+                    <p class="text-xl font-light mt-1">${data.titre || 'Votre Titre Professionnel'}</p>
+                </header>
+
+                <div class="grid grid-cols-3 gap-8 p-8 pt-6">
+                    
+                    <div class="col-span-1 space-y-6">
+                        
+                        <div>
+                            <h2 class="cv-text-sm font-bold tracking-wider uppercase mb-2" style="color: ${accent};">Profil</h2>
+                            <p class="cv-text-xs" style="color: ${subTextColor};">${data['profil-summary'] || 'Un résumé percutant qui attire l\'attention des recruteurs...'}</p>
+                        </div>
+
+                        <div>
+                            <h2 class="cv-text-sm font-bold tracking-wider uppercase mb-2" style="color: ${accent};">Contact</h2>
+                            <div class="space-y-1 cv-text-xs" style="color: ${subTextColor};">
+                                <p class="flex items-center"><i data-lucide="mail" class="cv-icon-sm mr-2" style="color: ${accent};"></i> ${data.email || 'email@exemple.com'}</p>
+                                <p class="flex items-center"><i data-lucide="phone" class="cv-icon-sm mr-2" style="color: ${accent};"></i> ${data.phone || '+33 00 00 00 00'}</p>
+                                <p class="flex items-center"><i data-lucide="map-pin" class="cv-icon-sm mr-2" style="color: ${accent};"></i> ${data.location || 'Ville, Pays'}</p>
+                            </div>
+                        </div>
+
+                        <div>
+                            <h2 class="cv-text-sm font-bold tracking-wider uppercase mb-2" style="color: ${accent};">Compétences</h2>
+                            <div class="flex flex-wrap">
+                                ${skillsHTML || `<p class="cv-text-xs" style="color: ${subTextColor};">Ajoutez vos compétences clés.</p>`}
+                            </div>
+                        </div>
+
+                        <div>
+                            <h2 class="cv-text-sm font-bold tracking-wider uppercase mb-2" style="color: ${accent};">Formation</h2>
+                            ${data.formations.length > 0 ? data.formations.map(form => `
+                                <div class="mb-3">
+                                    <h4 class="cv-text-sm font-semibold" style="color: ${mainTextColor};">${form.titre}</h4>
+                                    <p class="cv-text-xs font-light" style="color: ${subTextColor};">${form.etablissement}</p>
+                                    <p class="cv-text-xs" style="color: ${accent};">${form.annee}</p>
+                                </div>
+                            `).join('') : `<p class="cv-text-xs" style="color: ${subTextColor};">Ajoutez vos diplômes ici.</p>`}
+                        </div>
+                    </div>
+
+                    <div class="col-span-2 space-y-6">
+                        <h2 class="cv-text-sm font-bold tracking-wider uppercase pb-1 mb-3 border-b" style="color: ${accent}; border-color: #d1d5db;">Expérience Professionnelle</h2>
+                        <div class="space-y-6">
+                            ${data.experiences.length > 0 ? data.experiences.map(exp => `
+                                <div>
+                                    <h4 class="cv-text-base font-bold" style="color: ${mainTextColor};">${exp.titre}</h4>
+                                    <p class="cv-text-sm font-light italic mt-0.5" style="color: ${subTextColor};">${exp.entreprise} <span class="float-right font-normal" style="color: ${accent};">${exp.duree}</span></p>
+                                    <ul class="cv-text-xs mt-2 list-disc pl-4" style="color: ${subTextColor};">
+                                        <li>${exp.description}</li>
+                                    </ul>
+                                </div>
+                            `).join('') : `<p class="cv-text-base" style="color: ${subTextColor};">Ajoutez vos expériences professionnelles clés.</p>`}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `;
+    }
+// ================== TEMPLATE 8 (Academic Timeline) ==================
+    function renderTemplate8(data, accent, bgColor) {
+        const skillsHTML = data.skills.split(',').map(s => s.trim()).filter(s => s).map(s => `<li class="cv-text-xs">${s}</li>`).join('');
+        const mainTextColor = '#1c1c1e';
+        const subTextColor = '#4b5563';
+
+        return `
+            <div class="p-8 font-serif h-[297mm] overflow-hidden" style="background-color: ${bgColor}; color: ${mainTextColor};">
+                
+                <header class="text-center pb-6 border-b-4 mb-8" style="border-color: ${accent};">
+                    <h1 class="text-5xl font-extrabold tracking-wider uppercase" style="color: ${accent};">${data.nom || 'Votre Nom'}</h1>
+                    <p class="text-2xl font-light mt-2" style="color: ${mainTextColor};">${data.titre || 'Votre Titre Académique/Professionnel'}</p>
+                    <div class="cv-text-sm mt-3 space-x-4" style="color: ${subTextColor};">
+                        <span>${data.email || 'email@exemple.com'}</span> |
+                        <span>${data.phone || '+33 00 00 00 00'}</span> |
+                        <span>${data.location || 'Ville, Pays'}</span>
+                    </div>
+                </header>
+
+                <div class="grid grid-cols-12 gap-8">
+                    
+                    <div class="col-span-8 pr-4 border-r" style="border-color: #d1d5db;">
+                        
+                        <div>
+                            <h2 class="cv-text-sm font-bold tracking-widest uppercase mb-4" style="color: ${accent};">Profil</h2>
+                            <p class="cv-text-base mb-8" style="color: ${subTextColor};">${data['profil-summary'] || 'Un résumé académique ou professionnel très formel.'}</p>
+                        </div>
+                        
+                        <div>
+                            <h2 class="cv-text-sm font-bold tracking-widest uppercase mb-4" style="color: ${accent};">Expérience / Publications</h2>
+                            <div class="space-y-6 border-l pl-4" style="border-color: ${accent};">
+                                ${data.experiences.length > 0 ? data.experiences.map(exp => `
+                                    <div class="relative">
+                                        <div class="absolute -left-2.5 w-4 h-4 rounded-full border-2" style="background-color: white; border-color: ${accent};"></div>
+                                        <h4 class="cv-text-base font-bold" style="color: ${mainTextColor};">${exp.titre} <span class="float-right font-normal cv-text-sm" style="color: ${accent};">${exp.duree}</span></h4>
+                                        <p class="cv-text-sm italic mt-0.5" style="color: ${subTextColor};">${exp.entreprise}</p>
+                                        <ul class="cv-text-xs mt-2 list-disc pl-4" style="color: ${subTextColor};">
+                                            <li>${exp.description}</li>
+                                        </ul>
+                                    </div>
+                                `).join('') : `<p class="cv-text-base" style="color: ${subTextColor};">Ajoutez vos jalons professionnels/académiques.</p>`}
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-span-4 space-y-6">
+                        
+                        <div>
+                            <h2 class="cv-text-sm font-bold tracking-widest uppercase mb-3 border-b" style="color: ${accent}; border-color: #d1d5db;">Formation</h2>
+                            ${data.formations.length > 0 ? data.formations.map(form => `
+                                <div class="mb-4">
+                                    <p class="cv-text-sm font-light float-right" style="color: ${accent};">${form.annee}</p>
+                                    <h4 class="cv-text-sm font-bold" style="color: ${mainTextColor};">${form.titre}</h4>
+                                    <p class="cv-text-xs" style="color: ${subTextColor};">${form.etablissement}</p>
+                                    <div class="clear-both"></div>
+                                </div>
+                            `).join('') : `<p class="cv-text-xs" style="color: ${subTextColor};">Ajoutez vos diplômes ici.</p>`}
+                        </div>
+
+                        <div>
+                            <h2 class="cv-text-sm font-bold tracking-widest uppercase mb-3 border-b" style="color: ${accent}; border-color: #d1d5db;">Compétences</h2>
+                            <ul class="cv-text-xs list-disc pl-4 space-y-1" style="color: ${subTextColor};">
+                                ${skillsHTML || `<li>Ajoutez vos compétences clés.</li>`}
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `;
+    }
+
+    // ================== TEMPLATE 9 (Green Corporate) ==================
+    function renderTemplate9(data, accent, bgColor) {
+        const skillsHTML = data.skills.split(',').map(s => s.trim()).filter(s => s).map(s => `<span class="cv-text-xs block mb-1 font-medium" style="color: ${accent};">• ${s}</span>`).join('');
+        const mainTextColor = '#1c1c1e';
+        const subTextColor = '#4b5563';
+
+        return `
+            <div class="p-8 font-sans h-[297mm] overflow-hidden" style="background-color: ${bgColor}; color: ${mainTextColor};">
+                
+                <header class="pb-6 mb-6">
+                    <div class="flex items-center space-x-6">
+                        ${data.photo ? `<img src="${data.photo}" alt="Photo Profil" class="w-20 h-20 rounded-lg object-cover border-4" style="border-color: #e5e7eb;">` : ''}
+                        <div>
+                            <h1 class="text-4xl font-extrabold tracking-tight" style="color: ${mainTextColor};">${data.nom || 'Votre Nom'}</h1>
+                            <p class="text-xl font-light mt-1" style="color: ${accent};">${data.titre || 'Votre Titre Professionnel'}</p>
+                        </div>
+                    </div>
+                </header>
+                
+                <div class="grid grid-cols-4 gap-8">
+                    
+                    <div class="col-span-1 space-y-6">
+                        
+                        <div>
+                            <h2 class="cv-text-sm font-bold tracking-wider uppercase mb-2" style="color: ${accent};">Contact</h2>
+                            <div class="space-y-1 cv-text-xs" style="color: ${subTextColor};">
+                                <p class="flex items-center"><i data-lucide="mail" class="cv-icon-sm mr-2" style="color: ${accent};"></i> ${data.email || 'email@exemple.com'}</p>
+                                <p class="flex items-center"><i data-lucide="phone" class="cv-icon-sm mr-2" style="color: ${accent};"></i> ${data.phone || '+33 00 00 00 00'}</p>
+                                <p class="flex items-center"><i data-lucide="map-pin" class="cv-icon-sm mr-2" style="color: ${accent};"></i> ${data.location || 'Ville, Pays'}</p>
+                            </div>
+                        </div>
+
+                        <div>
+                            <h2 class="cv-text-sm font-bold tracking-wider uppercase mb-2 border-b pb-1" style="color: ${accent}; border-color: #e5e7eb;">Compétences</h2>
+                            <div class="pt-1">
+                                ${skillsHTML || `<p class="cv-text-xs" style="color: ${subTextColor};">Ajoutez vos compétences clés.</p>`}
+                            </div>
+                        </div>
+
+                        <div>
+                            <h2 class="cv-text-sm font-bold tracking-wider uppercase mb-2 border-b pb-1" style="color: ${accent}; border-color: #e5e7eb;">Formation</h2>
+                            ${data.formations.length > 0 ? data.formations.map(form => `
+                                <div class="mb-4 pt-1">
+                                    <h4 class="cv-text-sm font-bold" style="color: ${mainTextColor};">${form.titre}</h4>
+                                    <p class="cv-text-xs font-light" style="color: ${subTextColor};">${form.etablissement}</p>
+                                    <p class="cv-text-xs" style="color: ${accent};">${form.annee}</p>
+                                </div>
+                            `).join('') : `<p class="cv-text-xs" style="color: ${subTextColor};">Ajoutez vos diplômes ici.</p>`}
+                        </div>
+                    </div>
+
+                    <div class="col-span-3 space-y-6 pl-4">
+                        
+                        <div>
+                            <h2 class="cv-text-sm font-bold tracking-wider uppercase mb-3 border-b pb-1" style="color: ${accent}; border-color: #e5e7eb;">Profil Professionnel</h2>
+                            <p class="cv-text-base mt-2" style="color: ${subTextColor};">${data['profil-summary'] || 'Un résumé professionnel concis et élégant.'}</p>
+                        </div>
+
+                        <div>
+                            <h2 class="cv-text-sm font-bold tracking-wider uppercase mb-3 border-b pb-1" style="color: ${accent}; border-color: #e5e7eb;">Expérience Professionnelle</h2>
+                            <div class="space-y-6">
+                                ${data.experiences.length > 0 ? data.experiences.map(exp => `
+                                    <div>
+                                        <h4 class="cv-text-base font-bold" style="color: ${mainTextColor};">${exp.titre}</h4>
+                                        <p class="cv-text-sm font-light mt-0.5" style="color: ${subTextColor};">${exp.entreprise} <span class="float-right font-normal" style="color: ${accent};">${exp.duree}</span></p>
+                                        <ul class="cv-text-xs mt-2 list-disc pl-4" style="color: ${subTextColor};">
+                                            <li>${exp.description}</li>
+                                        </ul>
+                                    </div>
+                                `).join('') : `<p class="cv-text-base" style="color: ${subTextColor};">Ajoutez vos expériences professionnelles clés.</p>`}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `;
+    }
+    // =========================================================
+    // --- NOUVEAUX TEMPLATES (11-20) ---
+    // =========================================================
+
+    // ================== TEMPLATE 10 (Data Scientist - Minimalist) ==================
+    function renderTemplate10(data, accent, bgColor) {
+        const skillsArray = data.skills.split(',').map(s => s.trim()).filter(s => s);
+        const skillsHTML = skillsArray.map(s => `
+            <div class="mb-2">
+                <p class="cv-text-sm font-medium" style="color: ${accent};">${s}</p>
+                <div class="h-1 rounded-full" style="background-color: #e5e7eb;">
+                    <div class="h-full rounded-full" style="width: 80%; background-color: ${accent};"></div>
+                </div>
+            </div>
+        `).join(''); // Mocked skill bar for visualization
+        
+        const mainTextColor = '#1f2937';
+        const subTextColor = '#4b5563';
+
+        return `
+            <div class="p-8 font-sans h-[297mm] overflow-hidden" style="background-color: ${bgColor}; color: ${mainTextColor};">
+                
+                <header class="text-center pb-6 mb-6 border-b-2" style="border-color: ${accent};">
+                    ${data.photo ? `<img src="${data.photo}" alt="Photo Profil" class="w-16 h-16 rounded-full object-cover mb-3 mx-auto border-2" style="border-color: ${accent};">` : ''}
+                    <h1 class="text-4xl font-extrabold tracking-tight" style="color: ${mainTextColor};">${data.nom || 'Votre Nom'}</h1>
+                    <p class="text-xl font-light mt-1" style="color: ${accent};">${data.titre || 'Data Scientist / Analyste'}</p>
+                    <div class="cv-text-sm mt-3 space-x-4" style="color: ${subTextColor};">
+                        <span>${data.email || 'email@exemple.com'}</span> |
+                        <span>${data.phone || '+33 00 00 00 00'}</span> |
+                        <span>${data.location || 'Ville, Pays'}</span>
+                    </div>
+                </header>
+
+                <p class="cv-text-base mb-6 text-center" style="color: ${subTextColor};">${data['profil-summary'] || 'Expert en modélisation de données et apprentissage automatique, orienté résultats.'}</p>
+
+                <div class="grid grid-cols-3 gap-8">
+                    
+                    <div class="col-span-2 space-y-6 border-r pr-8" style="border-color: #e5e7eb;">
+                        
+                        <div>
+                            <h2 class="cv-text-base font-bold tracking-wider uppercase mb-3" style="color: ${accent};"><i data-lucide="briefcase" class="cv-icon-md mr-1"></i> Expérience Professionnelle</h2>
+                            <div class="space-y-4">
+                                ${data.experiences.length > 0 ? data.experiences.map(exp => `
+                                    <div class="pb-2 border-b" style="border-color: #f3f4f6;">
+                                        <h4 class="cv-text-base font-bold" style="color: ${mainTextColor};">${exp.titre} | ${exp.entreprise} <span class="float-right font-light cv-text-sm" style="color: ${accent};">${exp.duree}</span></h4>
+                                        <p class="cv-text-xs mt-2" style="color: ${subTextColor};">${exp.description}</p>
+                                    </div>
+                                `).join('') : `<p class="cv-text-base" style="color: ${subTextColor};">Ajoutez vos expériences professionnelles clés.</p>`}
+                            </div>
+                        </div>
+
+                        <div>
+                            <h2 class="cv-text-base font-bold tracking-wider uppercase mb-3" style="color: ${accent};"><i data-lucide="book-open" class="cv-icon-md mr-1"></i> Formation Académique</h2>
+                            <div class="space-y-4">
+                                ${data.formations.length > 0 ? data.formations.map(form => `
+                                    <div>
+                                        <h4 class="cv-text-sm font-bold" style="color: ${mainTextColor};">${form.titre}</h4>
+                                        <p class="cv-text-xs font-light" style="color: ${subTextColor};">${form.etablissement} - ${form.annee}</p>
+                                    </div>
+                                `).join('') : `<p class="cv-text-sm" style="color: ${subTextColor};">Ajoutez vos diplômes ici.</p>`}
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-span-1 space-y-6">
+                        <h2 class="cv-text-base font-bold tracking-wider uppercase mb-3" style="color: ${accent};"><i data-lucide="monitor" class="cv-icon-md mr-1"></i> Compétences Techniques</h2>
+                        ${skillsHTML || `<p class="cv-text-sm" style="color: ${subTextColor};">Ajoutez vos compétences clés.</p>`}
+                    </div>
+                </div>
+            </div>
+        `;
+    }
+
+    // ================== TEMPLATE 11 (The Consultant - Red Line) ==================
+    function renderTemplate11(data, accent, bgColor) {
+        const skillsHTML = data.skills.split(',').map(s => s.trim()).filter(s => s).map(s => `<span class="inline-block cv-text-xs px-2 py-0.5 rounded-sm font-medium text-white mr-1.5 mb-1.5" style="background-color: ${accent};">${s}</span>`).join('');
+        const mainTextColor = '#1f2937';
+        const subTextColor = '#4b5563';
+
+        return `
+            <div class="p-8 font-sans grid grid-cols-4 h-[297mm] overflow-hidden" style="background-color: ${bgColor}; color: ${mainTextColor};">
+                
+                <div class="col-span-1 border-r pr-4" style="border-color: ${accent};">
+                    <h1 class="text-3xl font-black" style="color: ${accent};">${data.nom || 'Votre Nom'}</h1>
+                    <p class="cv-text-sm font-semibold mt-1" style="color: ${mainTextColor};">${data.titre || 'Consultant Senior'}</p>
+                    
+                    ${data.photo ? `<img src="${data.photo}" alt="Photo Profil" class="w-24 h-24 rounded-lg object-cover mt-4 mb-4 border-4" style="border-color: #f3f4f6;">` : ''}
+
+                    <div class="space-y-4 pt-4 border-t" style="border-color: #e5e7eb;">
+                        <h2 class="cv-text-sm font-bold tracking-wider uppercase" style="color: ${accent};">Contact</h2>
+                        <div class="space-y-1 cv-text-xs" style="color: ${subTextColor};">
+                            <p class="flex items-center"><i data-lucide="mail" class="cv-icon-sm mr-2" style="color: ${accent};"></i> ${data.email || 'email@exemple.com'}</p>
+                            <p class="flex items-center"><i data-lucide="phone" class="cv-icon-sm mr-2" style="color: ${accent};"></i> ${data.phone || '+33 00 00 00 00'}</p>
+                            <p class="flex items-center"><i data-lucide="map-pin" class="cv-icon-sm mr-2" style="color: ${accent};"></i> ${data.location || 'Ville, Pays'}</p>
+                        </div>
+                    </div>
+
+                    <div class="space-y-4 pt-4 border-t mt-4" style="border-color: #e5e7eb;">
+                        <h2 class="cv-text-sm font-bold tracking-wider uppercase" style="color: ${accent};">Compétences</h2>
+                        <div class="flex flex-wrap">
+                            ${skillsHTML || `<p class="cv-text-xs" style="color: ${subTextColor};">Ajoutez vos compétences clés.</p>`}
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-span-3 pl-6 space-y-6">
+                    
+                    <div>
+                        <h2 class="cv-text-sm font-bold tracking-wider uppercase mb-3 border-b pb-1" style="color: ${accent}; border-color: #e5e7eb;"><i data-lucide="user" class="cv-icon-md mr-2"></i> Profil</h2>
+                        <p class="cv-text-base" style="color: ${subTextColor};">${data['profil-summary'] || 'Consultant axé sur l\'optimisation des processus et la stratégie d\'entreprise.'}</p>
+                    </div>
+
+                    <div>
+                        <h2 class="cv-text-sm font-bold tracking-wider uppercase mb-3 border-b pb-1" style="color: ${accent}; border-color: #e5e7eb;"><i data-lucide="briefcase" class="cv-icon-md mr-2"></i> Expérience Professionnelle</h2>
+                        <div class="space-y-6">
+                            ${data.experiences.length > 0 ? data.experiences.map(exp => `
+                                <div>
+                                    <h4 class="cv-text-base font-bold" style="color: ${mainTextColor};">${exp.titre} | ${exp.entreprise} <span class="float-right font-light cv-text-sm" style="color: ${subTextColor};">${exp.duree}</span></h4>
+                                    <ul class="cv-text-xs mt-2 list-disc pl-4" style="color: ${subTextColor};">
+                                        <li>${exp.description}</li>
+                                    </ul>
+                                </div>
+                            `).join('') : `<p class="cv-text-base" style="color: ${subTextColor};">Ajoutez vos expériences professionnelles clés.</p>`}
+                        </div>
+                    </div>
+
+                    <div>
+                        <h2 class="cv-text-sm font-bold tracking-wider uppercase mb-3 border-b pb-1" style="color: ${accent}; border-color: #e5e7eb;"><i data-lucide="book-open" class="cv-icon-md mr-2"></i> Formation</h2>
+                        <div class="space-y-4">
+                            ${data.formations.length > 0 ? data.formations.map(form => `
+                                <div>
+                                    <h4 class="cv-text-sm font-bold" style="color: ${mainTextColor};">${form.titre}</h4>
+                                    <p class="cv-text-xs font-light" style="color: ${subTextColor};">${form.etablissement} - ${form.annee}</p>
+                                </div>
+                            `).join('') : `<p class="cv-text-sm" style="color: ${subTextColor};">Ajoutez vos diplômes ici.</p>`}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `;
+    }
+// ================== TEMPLATE 12 (Modern Art - Header Band) ==================
+    function renderTemplate12(data, accent, bgColor) {
+        const skillsHTML = data.skills.split(',').map(s => s.trim()).filter(s => s).map(s => `<span class="inline-block cv-text-sm px-3 py-1 rounded-full font-medium text-white mr-2 mb-2" style="background-color: ${accent};">${s}</span>`).join('');
+        const mainTextColor = '#1f2937';
+        const subTextColor = '#4b5563';
+
+        return `
+            <div class="font-sans h-[297mm] overflow-hidden" style="background-color: ${bgColor}; color: ${mainTextColor};">
+                
+                <header class="p-8" style="background-color: ${accent}; color: white;">
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <h1 class="text-5xl font-extrabold tracking-tight">${data.nom || 'Votre Nom'}</h1>
+                            <p class="text-xl font-light mt-1">${data.titre || 'Designer Graphique'}</p>
+                        </div>
+                        ${data.photo ? `<img src="${data.photo}" alt="Photo Profil" class="w-20 h-20 rounded-full object-cover border-4" style="border-color: white;">` : ''}
+                    </div>
+                    <div class="cv-text-sm mt-4 space-x-4">
+                        <span><i data-lucide="mail" class="cv-icon-sm mr-1"></i> ${data.email || 'email@exemple.com'}</span> |
+                        <span><i data-lucide="phone" class="cv-icon-sm mr-1"></i> ${data.phone || '+33 00 00 00 00'}</span> |
+                        <span><i data-lucide="map-pin" class="cv-icon-sm mr-1"></i> ${data.location || 'Ville, Pays'}</span>
+                    </div>
+                </header>
+
+                <div class="grid grid-cols-3 gap-8 p-8 pt-6">
+                    
+                    <div class="col-span-1 space-y-6">
+                        
+                        <div class="pb-4 border-b" style="border-color: #e5e7eb;">
+                            <h2 class="cv-text-sm font-bold tracking-wider uppercase mb-2" style="color: ${accent};">Profil</h2>
+                            <p class="cv-text-xs" style="color: ${subTextColor};">${data['profil-summary'] || 'Créatif avec un sens aigu de l\'esthétique et du détail.'}</p>
+                        </div>
+
+                        <div>
+                            <h2 class="cv-text-sm font-bold tracking-wider uppercase mb-3" style="color: ${accent};">Compétences</h2>
+                            <div class="flex flex-wrap">
+                                ${skillsHTML || `<p class="cv-text-sm" style="color: ${subTextColor};">Ajoutez vos compétences clés.</p>`}
+                            </div>
+                        </div>
+
+                        <div>
+                            <h2 class="cv-text-sm font-bold tracking-wider uppercase mb-3" style="color: ${accent};">Formation</h2>
+                            ${data.formations.length > 0 ? data.formations.map(form => `
+                                <div class="mb-4">
+                                    <h4 class="cv-text-sm font-bold" style="color: ${mainTextColor};">${form.titre}</h4>
+                                    <p class="cv-text-xs font-light" style="color: ${subTextColor};">${form.etablissement} - ${form.annee}</p>
+                                </div>
+                            `).join('') : `<p class="cv-text-sm" style="color: ${subTextColor};">Ajoutez vos diplômes ici.</p>`}
+                        </div>
+                    </div>
+
+                    <div class="col-span-2 space-y-6">
+                        <h2 class="cv-text-sm font-bold tracking-wider uppercase mb-3 border-b pb-1" style="color: ${accent}; border-color: #e5e7eb;">Expérience Professionnelle</h2>
+                        <div class="space-y-6">
+                            ${data.experiences.length > 0 ? data.experiences.map(exp => `
+                                <div class="relative pl-4">
+                                    <span class="absolute -left-1 w-2 h-2 rounded-full" style="background-color: ${accent};"></span>
+                                    <h4 class="cv-text-base font-bold" style="color: ${mainTextColor};">${exp.titre} | ${exp.entreprise} <span class="float-right font-light cv-text-sm" style="color: ${subTextColor};">${exp.duree}</span></h4>
+                                    <p class="cv-text-xs mt-2" style="color: ${subTextColor};">${exp.description}</p>
+                                </div>
+                            `).join('') : `<p class="cv-text-base" style="color: ${subTextColor};">Ajoutez vos expériences professionnelles clés.</p>`}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `;
+    }
+    
+    // ================== TEMPLATE 13 (Classic Banker - Formal Serif) ==================
+    function renderTemplate13(data, accent, bgColor) {
+        const skillsHTML = data.skills.split(',').map(s => s.trim()).filter(s => s).map(s => `<li class="cv-text-xs">${s}</li>`).join('');
+        const mainTextColor = '#1c1c1e';
+        const subTextColor = '#374151';
+
+        return `
+            <div class="p-8 font-serif h-[297mm] overflow-hidden" style="background-color: ${bgColor}; color: ${mainTextColor};">
+                
+                <header class="text-center pb-6 border-b-2 mb-6" style="border-color: ${accent};">
+                    <h1 class="text-4xl font-extrabold tracking-tight" style="color: ${mainTextColor};">${data.nom || 'Votre Nom'}</h1>
+                    <p class="text-xl font-light mt-1" style="color: ${accent};">${data.titre || 'Analyste Financier'}</p>
+                    <div class="cv-text-sm mt-3 space-x-4" style="color: ${subTextColor};">
+                        <span>${data.email || 'email@exemple.com'}</span> |
+                        <span>${data.phone || '+33 00 00 00 00'}</span> |
+                        <span>${data.location || 'Ville, Pays'}</span>
+                    </div>
+                </header>
+                
+                <p class="cv-text-base mb-6" style="color: ${subTextColor};">${data['profil-summary'] || 'Professionnel expérimenté de la finance, rigoureux et axé sur la performance.'}</p>
+
+                <div class="grid grid-cols-4 gap-8">
+                    
+                    <div class="col-span-1 space-y-6">
+                        
+                        <div>
+                            <h2 class="cv-text-sm font-bold tracking-widest uppercase mb-3 border-b pb-1" style="color: ${accent}; border-color: #d1d5db;">Formation</h2>
+                            ${data.formations.length > 0 ? data.formations.map(form => `
+                                <div class="mb-4">
+                                    <h4 class="cv-text-sm font-bold" style="color: ${mainTextColor};">${form.titre}</h4>
+                                    <p class="cv-text-xs font-light" style="color: ${subTextColor};">${form.etablissement}</p>
+                                    <p class="cv-text-xs" style="color: ${accent};">${form.annee}</p>
+                                </div>
+                            `).join('') : `<p class="cv-text-xs" style="color: ${subTextColor};">Ajoutez vos diplômes ici.</p>`}
+                        </div>
+
+                        <div>
+                            <h2 class="cv-text-sm font-bold tracking-widest uppercase mb-3 border-b pb-1" style="color: ${accent}; border-color: #d1d5db;">Compétences</h2>
+                            <ul class="cv-text-xs list-disc pl-4 space-y-1" style="color: ${subTextColor};">
+                                ${skillsHTML || `<li>Ajoutez vos compétences clés.</li>`}
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="col-span-3 space-y-6 border-l pl-8" style="border-color: #e5e7eb;">
+                        <h2 class="cv-text-sm font-bold tracking-widest uppercase mb-3 border-b pb-1" style="color: ${accent}; border-color: #d1d5db;">Expérience Professionnelle</h2>
+                        <div class="space-y-6">
+                            ${data.experiences.length > 0 ? data.experiences.map(exp => `
+                                <div>
+                                    <h4 class="cv-text-base font-bold" style="color: ${mainTextColor};">${exp.titre} <span class="float-right font-light cv-text-sm" style="color: ${accent};">${exp.duree}</span></h4>
+                                    <p class="cv-text-sm italic mt-0.5" style="color: ${subTextColor};">${exp.entreprise}</p>
+                                    <p class="cv-text-xs mt-2" style="color: ${subTextColor};">${exp.description}</p>
+                                </div>
+                            `).join('') : `<p class="cv-text-base" style="color: ${subTextColor};">Ajoutez vos expériences professionnelles clés.</p>`}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `;
+    }
+    // ================== TEMPLATE 14 (UX/UI Flow - Pink Sidebar) ==================
+    function renderTemplate14(data, accent, bgColor) {
+        const skillsHTML = data.skills.split(',').map(s => s.trim()).filter(s => s).map(s => `<span class="inline-block cv-text-xs px-2 py-0.5 rounded-full font-medium text-white mr-1.5 mb-1.5" style="background-color: ${accent};">${s}</span>`).join('');
+        const mainTextColor = '#1f2937';
+        const subTextColor = '#4b5563';
+
+        return `
+            <div class="font-sans grid grid-cols-4 h-[297mm] overflow-hidden" style="background-color: ${bgColor}; color: ${mainTextColor};">
+                
+                <div class="col-span-1 p-6 space-y-6" style="background-color: ${accent}; color: white;">
+                    
+                    <div class="text-center pb-4 border-b border-white/30">
+                        ${data.photo ? `<img src="${data.photo}" alt="Photo Profil" class="w-24 h-24 rounded-full object-cover mb-3 mx-auto border-4 border-white/80">` : ''}
+                        <h1 class="text-2xl font-black">${data.nom || 'Votre Nom'}</h1>
+                        <p class="cv-text-sm font-light mt-1">${data.titre || 'UX Designer'}</p>
+                    </div>
+
+                    <div class="space-y-4">
+                        <h2 class="cv-text-sm font-bold tracking-wider uppercase border-b pb-1 border-white/30">Contact</h2>
+                        <div class="space-y-1 cv-text-xs">
+                            <p class="flex items-center"><i data-lucide="mail" class="cv-icon-sm mr-2"></i> ${data.email || 'email@exemple.com'}</p>
+                            <p class="flex items-center"><i data-lucide="phone" class="cv-icon-sm mr-2"></i> ${data.phone || '+33 00 00 00 00'}</p>
+                            <p class="flex items-center"><i data-lucide="map-pin" class="cv-icon-sm mr-2"></i> ${data.location || 'Ville, Pays'}</p>
+                        </div>
+                    </div>
+                    
+                    <div class="space-y-4">
+                        <h2 class="cv-text-sm font-bold tracking-wider uppercase border-b pb-1 border-white/30">Compétences</h2>
+                        <div class="flex flex-wrap">
+                            ${skillsHTML.replace(/background-color: ${accent};/g, 'background-color: white; color: '+accent+';') || `<p class="cv-text-xs">Ajoutez vos compétences clés.</p>`}
+                        </div>
+                    </div>
+
+                    <div class="space-y-4">
+                        <h2 class="cv-text-sm font-bold tracking-wider uppercase border-b pb-1 border-white/30">Formation</h2>
+                        ${data.formations.length > 0 ? data.formations.map(form => `
+                            <div class="mb-3">
+                                <h4 class="cv-text-sm font-semibold">${form.titre}</h4>
+                                <p class="cv-text-xs">${form.etablissement} (${form.annee})</p>
+                            </div>
+                        `).join('') : `<p class="cv-text-xs">Ajoutez vos diplômes ici.</p>`}
+                    </div>
+                </div>
+
+                <div class="col-span-3 p-8 space-y-6">
+                    
+                    <div>
+                        <h2 class="cv-text-sm font-bold tracking-wider uppercase mb-3 border-b pb-1" style="color: ${accent}; border-color: #e5e7eb;">Profil & Expertise</h2>
+                        <p class="cv-text-base" style="color: ${subTextColor};">${data['profil-summary'] || 'Je crée des interfaces intuitives et esthétiques pour maximiser l\'engagement utilisateur.'}</p>
+                    </div>
+
+                    <div>
+                        <h2 class="cv-text-sm font-bold tracking-wider uppercase mb-3 border-b pb-1" style="color: ${accent}; border-color: #e5e7eb;">Expérience Professionnelle</h2>
+                        <div class="space-y-6">
+                            ${data.experiences.length > 0 ? data.experiences.map(exp => `
+                                <div>
+                                    <h4 class="cv-text-base font-bold" style="color: ${mainTextColor};">${exp.titre} <span class="float-right font-light cv-text-sm" style="color: ${accent};">${exp.duree}</span></h4>
+                                    <p class="cv-text-sm italic mt-0.5" style="color: ${subTextColor};">${exp.entreprise}</p>
+                                    <p class="cv-text-xs mt-2" style="color: ${subTextColor};">${exp.description}</p>
+                                </div>
+                            `).join('') : `<p class="cv-text-base" style="color: ${subTextColor};">Ajoutez vos expériences professionnelles clés.</p>`}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `;
+    }
+
+    // ================== TEMPLATE 15 (Technical Grid) ==================
+    function renderTemplate15(data, accent, bgColor) {
+        const skillsHTML = data.skills.split(',').map(s => s.trim()).filter(s => s).map(s => `<span class="inline-block cv-text-xs mr-4 mb-2"><span class="w-2 h-2 rounded-full inline-block mr-1" style="background-color: ${accent};"></span>${s}</span>`).join('');
+        const mainTextColor = '#1f2937';
+        const subTextColor = '#4b5563';
+
+        return `
+            <div class="p-8 font-mono h-[297mm] overflow-hidden" style="background-color: ${bgColor}; color: ${mainTextColor};">
+                
+                <header class="pb-6 mb-6 grid grid-cols-4 gap-4 border-b-2" style="border-color: ${accent};">
+                    <div class="col-span-3">
+                        <h1 class="text-4xl font-extrabold tracking-tight" style="color: ${mainTextColor};">${data.nom || 'Votre Nom'}</h1>
+                        <p class="text-xl font-light mt-1" style="color: ${accent};">${data.titre || 'Ingénieur Logiciel Full-Stack'}</p>
+                        <p class="cv-text-base mt-2" style="color: ${subTextColor};">${data['profil-summary'] || 'Développeur passionné par les architectures scalables et les performances backend.'}</p>
+                    </div>
+                    <div class="col-span-1 cv-text-xs space-y-1" style="color: ${subTextColor};">
+                        <p class="flex items-center"><i data-lucide="mail" class="cv-icon-sm mr-2" style="color: ${accent};"></i> ${data.email || 'email@exemple.com'}</p>
+                        <p class="flex items-center"><i data-lucide="phone" class="cv-icon-sm mr-2" style="color: ${accent};"></i> ${data.phone || '+33 00 00 00 00'}</p>
+                        <p class="flex items-center"><i data-lucide="map-pin" class="cv-icon-sm mr-2" style="color: ${accent};"></i> ${data.location || 'Ville, Pays'}</p>
+                    </div>
+                </header>
+
+                <div class="grid grid-cols-4 gap-8">
+                    
+                    <div class="col-span-4 space-y-6">
+                        <h2 class="cv-text-sm font-bold tracking-widest uppercase mb-3 border-b pb-1" style="color: ${accent}; border-color: #e5e7eb;">Compétences Techniques</h2>
+                        <div class="flex flex-wrap">
+                            ${skillsHTML || `<p class="cv-text-sm" style="color: ${subTextColor};">Ajoutez vos compétences clés.</p>`}
+                        </div>
+                    </div>
+                    
+                    <div class="col-span-4 space-y-6">
+                        <h2 class="cv-text-sm font-bold tracking-widest uppercase mb-3 border-b pb-1" style="color: ${accent}; border-color: #e5e7eb;">Expérience Professionnelle</h2>
+                        <div class="space-y-6">
+                            ${data.experiences.length > 0 ? data.experiences.map(exp => `
+                                <div class="grid grid-cols-4 gap-4">
+                                    <h4 class="col-span-1 cv-text-sm font-bold" style="color: ${accent};">${exp.duree}</h4>
+                                    <div class="col-span-3">
+                                        <h4 class="cv-text-base font-bold" style="color: ${mainTextColor};">${exp.titre} | ${exp.entreprise}</h4>
+                                        <p class="cv-text-xs mt-2" style="color: ${subTextColor};">${exp.description}</p>
+                                    </div>
+                                </div>
+                            `).join('') : `<p class="cv-text-base" style="color: ${subTextColor};">Ajoutez vos expériences professionnelles clés.</p>`}
+                        </div>
+                    </div>
+
+                    <div class="col-span-4 space-y-6">
+                        <h2 class="cv-text-sm font-bold tracking-widest uppercase mb-3 border-b pb-1" style="color: ${accent}; border-color: #e5e7eb;">Formation</h2>
+                        <div class="space-y-4">
+                            ${data.formations.length > 0 ? data.formations.map(form => `
+                                <div>
+                                    <h4 class="cv-text-sm font-bold" style="color: ${mainTextColor};">${form.titre} | ${form.etablissement} <span class="float-right font-light" style="color: ${accent};">${form.annee}</span></h4>
+                                </div>
+                            `).join('') : `<p class="cv-text-sm" style="color: ${subTextColor};">Ajoutez vos diplômes ici.</p>`}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `;
+    }
+    // ================== TEMPLATE 16 (Midnight - Dark Mode 2) ==================
+    function renderTemplate16(data, accent, bgColor) {
+        const skillsHTML = data.skills.split(',').map(s => s.trim()).filter(s => s).map(s => `<span class="inline-block cv-text-xs px-2 py-0.5 rounded-full font-medium text-white border border-white/30 mr-1.5 mb-1.5">${s}</span>`).join('');
+        const mainTextColor = 'white';
+        const subTextColor = '#9ca3af';
+
+        return `
+            <div class="p-8 font-sans h-[297mm] overflow-hidden" style="background-color: ${bgColor}; color: ${mainTextColor};">
+                
+                <header class="text-center pb-6 mb-6 border-b" style="border-color: ${accent};">
+                    ${data.photo ? `<img src="${data.photo}" alt="Photo Profil" class="w-20 h-20 rounded-full object-cover mb-3 mx-auto border-2" style="border-color: ${accent};">` : ''}
+                    <h1 class="text-4xl font-extrabold" style="color: ${accent};">${data.nom || 'Votre Nom'}</h1>
+                    <p class="cv-text-base font-light mt-1" style="color: ${subTextColor};">${data.titre || 'Chef de Projet Digital'}</p>
+                </header>
+
+                <div class="grid grid-cols-4 gap-8">
+                    
+                    <div class="col-span-1 pr-4 space-y-6 border-r border-white/20">
+                        
+                        <div>
+                            <h2 class="cv-text-sm font-bold tracking-wider uppercase mb-2" style="color: ${accent};">Contact</h2>
+                            <div class="space-y-1 cv-text-xs" style="color: ${subTextColor};">
+                                <p class="flex items-center"><i data-lucide="mail" class="cv-icon-sm mr-2" style="color: ${accent};"></i> ${data.email || 'email@exemple.com'}</p>
+                                <p class="flex items-center"><i data-lucide="phone" class="cv-icon-sm mr-2" style="color: ${accent};"></i> ${data.phone || '+33 00 00 00 00'}</p>
+                                <p class="flex items-center"><i data-lucide="map-pin" class="cv-icon-sm mr-2" style="color: ${accent};"></i> ${data.location || 'Ville, Pays'}</p>
+                            </div>
+                        </div>
+
+                        <div>
+                            <h2 class="cv-text-sm font-bold tracking-wider uppercase mb-2" style="color: ${accent};">Compétences</h2>
+                            <div class="flex flex-wrap">
+                                ${skillsHTML || `<p class="cv-text-xs" style="color: ${subTextColor};">Ajoutez vos compétences clés.</p>`}
+                            </div>
+                        </div>
+
+                        <div>
+                            <h2 class="cv-text-sm font-bold tracking-wider uppercase mb-2" style="color: ${accent};">Formation</h2>
+                            ${data.formations.length > 0 ? data.formations.map(form => `
+                                <div class="mb-3">
+                                    <h4 class="cv-text-sm font-semibold">${form.titre}</h4>
+                                    <p class="cv-text-xs font-light" style="color: ${subTextColor};">${form.etablissement}</p>
+                                    <p class="cv-text-xs" style="color: ${accent};">${form.annee}</p>
+                                </div>
+                            `).join('') : `<p class="cv-text-xs" style="color: ${subTextColor};">Ajoutez vos diplômes ici.</p>`}
+                        </div>
+                    </div>
+
+                    <div class="col-span-3 pl-4 space-y-6">
+                        
+                        <div>
+                            <h2 class="cv-text-sm font-bold tracking-wider uppercase mb-3 border-b pb-1" style="color: ${accent}; border-color: ${accent};"><i data-lucide="user" class="cv-icon-md mr-2"></i> Profil</h2>
+                            <p class="cv-text-base" style="color: ${subTextColor};">${data['profil-summary'] || 'Expert en gestion de projet agile et en livraison de produits numériques.'}</p>
+                        </div>
+
+                        <div>
+                            <h2 class="cv-text-sm font-bold tracking-wider uppercase mb-3 border-b pb-1" style="color: ${accent}; border-color: ${accent};"><i data-lucide="briefcase" class="cv-icon-md mr-2"></i> Expérience Professionnelle</h2>
+                            <div class="space-y-6">
+                                ${data.experiences.length > 0 ? data.experiences.map(exp => `
+                                    <div class="pb-2 border-b border-white/10">
+                                        <h4 class="cv-text-base font-bold" style="color: ${mainTextColor};">${exp.titre} | ${exp.entreprise} <span class="float-right font-light cv-text-sm" style="color: ${accent};">${exp.duree}</span></h4>
+                                        <ul class="cv-text-xs mt-2 list-disc pl-4" style="color: ${subTextColor};">
+                                            <li>${exp.description}</li>
+                                        </ul>
+                                    </div>
+                                `).join('') : `<p class="cv-text-base" style="color: ${subTextColor};">Ajoutez vos expériences professionnelles clés.</p>`}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `;
+    }
+
+    // ================== TEMPLATE 17 (The Educator) ==================
+    function renderTemplate17(data, accent, bgColor) {
+        const skillsHTML = data.skills.split(',').map(s => s.trim()).filter(s => s).map(s => `<span class="inline-block cv-text-sm font-medium pr-4 border-r mr-4 mb-2" style="border-color: #e5e7eb;">${s}</span>`).join('');
+        const mainTextColor = '#1f2937';
+        const subTextColor = '#4b5563';
+
+        return `
+            <div class="p-8 font-sans h-[297mm] overflow-hidden" style="background-color: ${bgColor}; color: ${mainTextColor};">
+                
+                <header class="pb-6 mb-6 text-center border-b-4" style="border-color: ${accent};">
+                    <h1 class="text-4xl font-extrabold tracking-tight" style="color: ${mainTextColor};">${data.nom || 'Votre Nom'}</h1>
+                    <p class="text-xl font-light mt-1" style="color: ${accent};">${data.titre || 'Professeur Chercheur'}</p>
+                    <p class="cv-text-base mt-2" style="color: ${subTextColor};">${data['profil-summary'] || 'Expert en pédagogie et en recherche, dédié à l\'excellence académique.'}</p>
+                </header>
+
+                <div class="grid grid-cols-12 gap-8">
+                    
+                    <div class="col-span-4 space-y-6">
+                        
+                        <div class="pb-4 border-b" style="border-color: #e5e7eb;">
+                            <h2 class="cv-text-sm font-bold tracking-wider uppercase mb-2" style="color: ${accent};">Contact</h2>
+                            <div class="space-y-1 cv-text-xs" style="color: ${subTextColor};">
+                                <p class="flex items-center"><i data-lucide="mail" class="cv-icon-sm mr-2" style="color: ${accent};"></i> ${data.email || 'email@exemple.com'}</p>
+                                <p class="flex items-center"><i data-lucide="phone" class="cv-icon-sm mr-2" style="color: ${accent};"></i> ${data.phone || '+33 00 00 00 00'}</p>
+                                <p class="flex items-center"><i data-lucide="map-pin" class="cv-icon-sm mr-2" style="color: ${accent};"></i> ${data.location || 'Ville, Pays'}</p>
+                            </div>
+                        </div>
+
+                        <div>
+                            <h2 class="cv-text-sm font-bold tracking-wider uppercase mb-3 border-b pb-1" style="color: ${accent}; border-color: #e5e7eb;">Formation</h2>
+                            <div class="space-y-4 pt-1">
+                                ${data.formations.length > 0 ? data.formations.map(form => `
+                                    <div class="relative pl-3">
+                                        <span class="absolute -left-1.5 w-3 h-3 rounded-full" style="background-color: ${accent};"></span>
+                                        <h4 class="cv-text-sm font-bold" style="color: ${mainTextColor};">${form.titre}</h4>
+                                        <p class="cv-text-xs font-light" style="color: ${subTextColor};">${form.etablissement} - ${form.annee}</p>
+                                    </div>
+                                `).join('') : `<p class="cv-text-sm" style="color: ${subTextColor};">Ajoutez vos diplômes ici.</p>`}
+                            </div>
+                        </div>
+
+                        <div>
+                            <h2 class="cv-text-sm font-bold tracking-wider uppercase mb-3 border-b pb-1" style="color: ${accent}; border-color: #e5e7eb;">Compétences</h2>
+                            <div class="flex flex-wrap pt-1">
+                                ${skillsHTML || `<p class="cv-text-sm" style="color: ${subTextColor};">Ajoutez vos compétences clés.</p>`}
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-span-8 space-y-6 border-l pl-8" style="border-color: #e5e7eb;">
+                        <h2 class="cv-text-sm font-bold tracking-wider uppercase mb-3 border-b pb-1" style="color: ${accent}; border-color: #e5e7eb;">Expérience Professionnelle / Recherche</h2>
+                        <div class="space-y-6">
+                            ${data.experiences.length > 0 ? data.experiences.map(exp => `
+                                <div>
+                                    <h4 class="cv-text-base font-bold" style="color: ${mainTextColor};">${exp.titre} <span class="float-right font-light cv-text-sm" style="color: ${accent};">${exp.duree}</span></h4>
+                                    <p class="cv-text-sm italic mt-0.5" style="color: ${subTextColor};">${exp.entreprise}</p>
+                                    <ul class="cv-text-xs mt-2 list-disc pl-4" style="color: ${subTextColor};">
+                                        <li>${exp.description}</li>
+                                    </ul>
+                                </div>
+                            `).join('') : `<p class="cv-text-base" style="color: ${subTextColor};">Ajoutez vos expériences professionnelles clés.</p>`}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `;
+    }
+// ================== TEMPLATE 18 (The Freelancer - Amber) ==================
+    function renderTemplate18(data, accent, bgColor) {
+        const skillsHTML = data.skills.split(',').map(s => s.trim()).filter(s => s).map(s => `<span class="inline-block cv-text-xs px-2 py-0.5 rounded-md font-medium text-white mr-1.5 mb-1.5" style="background-color: ${accent};">${s}</span>`).join('');
+        const mainTextColor = '#1f2937';
+        const subTextColor = '#4b5563';
+
+        return `
+            <div class="p-8 font-sans h-[297mm] overflow-hidden" style="background-color: ${bgColor}; color: ${mainTextColor};">
+                
+                <div class="text-center pb-6 mb-6 border-b" style="border-color: #e5e7eb;">
+                    ${data.photo ? `<img src="${data.photo}" alt="Photo Profil" class="w-24 h-24 rounded-full object-cover mb-3 mx-auto border-4" style="border-color: ${accent};">` : ''}
+                    <h1 class="text-4xl font-extrabold tracking-tight" style="color: ${mainTextColor};">${data.nom || 'Votre Nom'}</h1>
+                    <p class="text-xl font-light mt-1" style="color: ${accent};">${data.titre || 'Freelance Développeur Web'}</p>
+                    <p class="cv-text-base mt-3" style="color: ${subTextColor};">${data['profil-summary'] || 'Freelancer polyvalent, spécialisé dans la création de solutions web rapides et optimisées.'}</p>
+                </div>
+
+                <div class="grid grid-cols-3 gap-8">
+                    
+                    <div class="col-span-1 space-y-6">
+                        
+                        <div>
+                            <h2 class="cv-text-sm font-bold tracking-wider uppercase mb-2 border-b pb-1" style="color: ${accent}; border-color: #e5e7eb;">Contact</h2>
+                            <div class="space-y-1 cv-text-xs" style="color: ${subTextColor};">
+                                <p class="flex items-center"><i data-lucide="mail" class="cv-icon-sm mr-2" style="color: ${accent};"></i> ${data.email || 'email@exemple.com'}</p>
+                                <p class="flex items-center"><i data-lucide="phone" class="cv-icon-sm mr-2" style="color: ${accent};"></i> ${data.phone || '+33 00 00 00 00'}</p>
+                                <p class="flex items-center"><i data-lucide="map-pin" class="cv-icon-sm mr-2" style="color: ${accent};"></i> ${data.location || 'Ville, Pays'}</p>
+                            </div>
+                        </div>
+
+                        <div>
+                            <h2 class="cv-text-sm font-bold tracking-wider uppercase mb-2 border-b pb-1" style="color: ${accent}; border-color: #e5e7eb;">Compétences Clés</h2>
+                            <div class="flex flex-wrap">
+                                ${skillsHTML || `<p class="cv-text-xs" style="color: ${subTextColor};">Ajoutez vos compétences clés.</p>`}
+                            </div>
+                        </div>
+                        
+                        <div>
+                            <h2 class="cv-text-sm font-bold tracking-wider uppercase mb-2 border-b pb-1" style="color: ${accent}; border-color: #e5e7eb;">Formation</h2>
+                            ${data.formations.length > 0 ? data.formations.map(form => `
+                                <div class="mb-3">
+                                    <h4 class="cv-text-sm font-bold" style="color: ${mainTextColor};">${form.titre}</h4>
+                                    <p class="cv-text-xs font-light" style="color: ${subTextColor};">${form.etablissement} - ${form.annee}</p>
+                                </div>
+                            `).join('') : `<p class="cv-text-xs" style="color: ${subTextColor};">Ajoutez vos diplômes ici.</p>`}
+                        </div>
+                    </div>
+
+                    <div class="col-span-2 space-y-6 border-l pl-8" style="border-color: #e5e7eb;">
+                        <h2 class="cv-text-sm font-bold tracking-wider uppercase mb-3 border-b pb-1" style="color: ${accent}; border-color: #e5e7eb;">Projets & Expériences</h2>
+                        <div class="space-y-6">
+                            ${data.experiences.length > 0 ? data.experiences.map(exp => `
+                                <div>
+                                    <h4 class="cv-text-base font-bold" style="color: ${mainTextColor};">${exp.titre} <span class="float-right font-light cv-text-sm" style="color: ${accent};">${exp.duree}</span></h4>
+                                    <p class="cv-text-sm italic mt-0.5" style="color: ${subTextColor};">${exp.entreprise} (Mission)</p>
+                                    <ul class="cv-text-xs mt-2 list-disc pl-4" style="color: ${subTextColor};">
+                                        <li>${exp.description}</li>
+                                    </ul>
+                                </div>
+                            `).join('') : `<p class="cv-text-base" style="color: ${subTextColor};">Ajoutez vos missions ou expériences clés.</p>`}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `;
+    }
+    
+    // ================== TEMPLATE 19 (The Globalist) ==================
+    function renderTemplate19(data, accent, bgColor) {
+        const skillsHTML = data.skills.split(',').map(s => s.trim()).filter(s => s).map(s => `<span class="inline-block cv-text-xs pr-4 border-r mr-4 mb-2" style="border-color: #e5e7eb;">${s}</span>`).join('');
+        const mainTextColor = '#1f2937';
+        const subTextColor = '#4b5563';
+
+        return `
+            <div class="p-8 font-sans h-[297mm] overflow-hidden" style="background-color: ${bgColor}; color: ${mainTextColor};">
+                
+                <header class="pb-6 mb-6 grid grid-cols-4 gap-4">
+                    <div class="col-span-3">
+                        <h1 class="text-4xl font-extrabold tracking-tight" style="color: ${accent};">${data.nom || 'Votre Nom'}</h1>
+                        <p class="text-xl font-light mt-1" style="color: ${mainTextColor};">${data.titre || 'Responsable des Affaires Internationales'}</p>
+                        <p class="cv-text-base mt-2" style="color: ${subTextColor};">${data['profil-summary'] || 'Professionnel trilingue avec une expertise en négociation et développement de partenariats mondiaux.'}</p>
+                    </div>
+                    <div class="col-span-1 cv-text-xs space-y-1 pt-2 border-l pl-4" style="border-color: #e5e7eb; color: ${subTextColor};">
+                        <p><i data-lucide="mail" class="cv-icon-sm mr-2" style="color: ${accent};"></i> ${data.email || 'email@exemple.com'}</p>
+                        <p><i data-lucide="phone" class="cv-icon-sm mr-2" style="color: ${accent};"></i> ${data.phone || '+33 00 00 00 00'}</p>
+                        <p><i data-lucide="map-pin" class="cv-icon-sm mr-2" style="color: ${accent};"></i> ${data.location || 'Ville, Pays'}</p>
+                    </div>
+                </header>
+
+                <div class="grid grid-cols-4 gap-8">
+                    
+                    <div class="col-span-1 space-y-6">
+                        
+                        <div>
+                            <h2 class="cv-text-sm font-bold tracking-wider uppercase mb-3 border-b pb-1" style="color: ${accent}; border-color: #e5e7eb;">Compétences</h2>
+                            <div class="flex flex-wrap pt-1">
+                                ${skillsHTML || `<p class="cv-text-sm" style="color: ${subTextColor};">Ajoutez vos compétences clés.</p>`}
+                            </div>
+                        </div>
+
+                        <div>
+                            <h2 class="cv-text-sm font-bold tracking-wider uppercase mb-3 border-b pb-1" style="color: ${accent}; border-color: #e5e7eb;">Formation</h2>
+                            ${data.formations.length > 0 ? data.formations.map(form => `
+                                <div class="mb-4 pt-1">
+                                    <h4 class="cv-text-sm font-bold" style="color: ${mainTextColor};">${form.titre}</h4>
+                                    <p class="cv-text-xs font-light" style="color: ${subTextColor};">${form.etablissement}</p>
+                                    <p class="cv-text-xs" style="color: ${accent};">${form.annee}</p>
+                                </div>
+                            `).join('') : `<p class="cv-text-xs" style="color: ${subTextColor};">Ajoutez vos diplômes ici.</p>`}
+                        </div>
+                    </div>
+
+                    <div class="col-span-3 space-y-6 border-l pl-8" style="border-color: #e5e7eb;">
+                        <h2 class="cv-text-sm font-bold tracking-wider uppercase mb-3 border-b pb-1" style="color: ${accent}; border-color: #e5e7eb;">Expérience Professionnelle</h2>
+                        <div class="space-y-6">
+                            ${data.experiences.length > 0 ? data.experiences.map(exp => `
+                                <div class="relative pl-4">
+                                    <span class="absolute -left-1 w-2 h-2 rounded-full" style="background-color: ${accent};"></span>
+                                    <h4 class="cv-text-base font-bold" style="color: ${mainTextColor};">${exp.titre} <span class="float-right font-light cv-text-sm" style="color: ${accent};">${exp.duree}</span></h4>
+                                    <p class="cv-text-sm italic mt-0.5" style="color: ${subTextColor};">${exp.entreprise}</p>
+                                    <ul class="cv-text-xs mt-2 list-disc pl-4" style="color: ${subTextColor};">
+                                        <li>${exp.description}</li>
+                                    </ul>
+                                </div>
+                            `).join('') : `<p class="cv-text-base" style="color: ${subTextColor};">Ajoutez vos expériences professionnelles clés.</p>`}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `;
+    }
+
+    // ================== TEMPLATE 20 (Professional Split - 50/50) ==================
+    function renderTemplate20(data, accent, bgColor) {
+        const skillsHTML = data.skills.split(',').map(s => s.trim()).filter(s => s).map(s => `<li class="cv-text-sm">${s}</li>`).join('');
+        const mainTextColor = '#1f2937';
+        const subTextColor = '#4b5563';
+
+        return `
+            <div class="p-8 font-sans grid grid-cols-2 gap-8 h-[297mm] overflow-hidden" style="background-color: ${bgColor}; color: ${mainTextColor};">
+                
+                <div class="col-span-1 pr-4 space-y-6 border-r" style="border-color: #e5e7eb;">
+                    
+                    <div class="pb-4 mb-4 border-b" style="border-color: ${accent};">
+                        ${data.photo ? `<img src="${data.photo}" alt="Photo Profil" class="w-20 h-20 rounded-full object-cover mb-4 mx-auto border-4" style="border-color: #e5e7eb;">` : ''}
+                        <h1 class="text-3xl font-black text-center" style="color: ${mainTextColor};">${data.nom || 'Votre Nom'}</h1>
+                        <p class="cv-text-base font-semibold text-center mt-1" style="color: ${accent};">${data.titre || 'Directeur des Opérations'}</p>
+                    </div>
+
+                    <div>
+                        <h2 class="cv-text-sm font-bold tracking-wider uppercase mb-3 border-b pb-1" style="color: ${accent}; border-color: #e5e7eb;"><i data-lucide="user" class="cv-icon-md mr-2"></i> Profil</h2>
+                        <p class="cv-text-base" style="color: ${subTextColor};">${data['profil-summary'] || 'Leader axé sur la performance, avec une expertise en gestion d\'équipe et en optimisation.'}</p>
+                    </div>
+
+                    <div>
+                        <h2 class="cv-text-sm font-bold tracking-wider uppercase mb-3 border-b pb-1" style="color: ${accent}; border-color: #e5e7eb;"><i data-lucide="code" class="cv-icon-md mr-2"></i> Compétences</h2>
+                        <ul class="cv-text-sm list-disc pl-4 space-y-1" style="color: ${subTextColor};">
+                            ${skillsHTML || `<li>Ajoutez vos compétences clés.</li>`}
+                        </ul>
+                    </div>
+                    
+                    <div>
+                        <h2 class="cv-text-sm font-bold tracking-wider uppercase mb-3 border-b pb-1" style="color: ${accent}; border-color: #e5e7eb;"><i data-lucide="mail" class="cv-icon-md mr-2"></i> Contact</h2>
+                        <div class="space-y-1 cv-text-xs" style="color: ${subTextColor};">
+                            <p class="flex items-center"><i data-lucide="mail" class="cv-icon-sm mr-2" style="color: ${accent};"></i> ${data.email || 'email@exemple.com'}</p>
+                            <p class="flex items-center"><i data-lucide="phone" class="cv-icon-sm mr-2" style="color: ${accent};"></i> ${data.phone || '+33 00 00 00 00'}</p>
+                            <p class="flex items-center"><i data-lucide="map-pin" class="cv-icon-sm mr-2" style="color: ${accent};"></i> ${data.location || 'Ville, Pays'}</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-span-1 pl-4 space-y-6">
+                    
+                    <div>
+                        <h2 class="cv-text-sm font-bold tracking-wider uppercase mb-3 border-b pb-1" style="color: ${accent}; border-color: #e5e7eb;"><i data-lucide="briefcase" class="cv-icon-md mr-2"></i> Expérience Professionnelle</h2>
+                        <div class="space-y-6">
+                            ${data.experiences.length > 0 ? data.experiences.map(exp => `
+                                <div>
+                                    <h4 class="cv-text-base font-bold" style="color: ${mainTextColor};">${exp.titre} <span class="float-right font-light cv-text-sm" style="color: ${accent};">${exp.duree}</span></h4>
+                                    <p class="cv-text-sm italic mt-0.5" style="color: ${subTextColor};">${exp.entreprise}</p>
+                                    <ul class="cv-text-xs mt-2 list-disc pl-4" style="color: ${subTextColor};">
+                                        <li>${exp.description}</li>
+                                    </ul>
+                                </div>
+                            `).join('') : `<p class="cv-text-base" style="color: ${subTextColor};">Ajoutez vos expériences professionnelles clés.</p>`}
+                        </div>
+                    </div>
+
+                    <div>
+                        <h2 class="cv-text-sm font-bold tracking-wider uppercase mb-3 border-b pb-1" style="color: ${accent}; border-color: #e5e7eb;"><i data-lucide="book-open" class="cv-icon-md mr-2"></i> Formation</h2>
+                        <div class="space-y-4">
+                            ${data.formations.length > 0 ? data.formations.map(form => `
+                                <div>
+                                    <h4 class="cv-text-sm font-bold" style="color: ${mainTextColor};">${form.titre} | ${form.etablissement} <span class="float-right font-light" style="color: ${accent};">${form.annee}</span></h4>
+                                </div>
+                            `).join('') : `<p class="cv-text-sm" style="color: ${subTextColor};">Ajoutez vos diplômes ici.</p>`}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `;
+    }
+
+    // =========================================================
+    // FONCTIONS UTILITAIRES (Toasts, Sauvegarde, Export, Notifs)
+    // =========================================================
+
+    /**
+     * Affiche une notification (toast) dans le coin supérieur.
+     */
+    function showNotification(title, message, type = 'gray') {
+        let iconHtml = '', bgColor, borderColor;
+
+        if (type === 'blue') { 
+            iconHtml = '<i data-lucide="bell" class="w-5 h-5 text-indigo-600"></i>';
+            bgColor = 'bg-indigo-50'; 
+            borderColor = 'border-indigo-400';
+        } else if (type === 'green') { 
+            iconHtml = '<i data-lucide="save" class="w-5 h-5 text-green-600"></i>';
+            bgColor = 'bg-green-50'; 
+            borderColor = 'border-green-400';
+        } else if (type === 'red') { 
+            iconHtml = '<i data-lucide="trash-2" class="w-5 h-5 text-red-600"></i>';
+            bgColor = 'bg-red-50'; 
+            borderColor = 'border-red-400';
+        } else {
+            iconHtml = '<i data-lucide="settings" class="w-5 h-5 text-gray-600"></i>';
+            bgColor = 'bg-gray-100';
+            borderColor = 'border-gray-400';
+        }
+
+        const container = document.getElementById('toast-container');
+        const toast = document.createElement('div');
+        
+        toast.className = `max-w-xs w-full p-4 rounded-xl border-l-4 shadow-lg transition-all duration-500 opacity-0 transform translate-y-[-20px] ${bgColor} ${borderColor} z-50`;
+        
+        toast.innerHTML = `
+            <div class="flex items-start">
+                <div class="shrink-0">${iconHtml}</div>
+                <div class="ml-3 text-sm flex-1">
+                    <p class="text-sm font-semibold text-gray-900">${title}</p>
+                    <p class="text-xs text-gray-600">${message}</p>
+                </div>
+            </div>
+        `;
+        
+        container.appendChild(toast);
+        if (window.lucide) window.lucide.createIcons();
+
+        // Afficher
+        setTimeout(() => {
+            toast.style.opacity = '1';
+            toast.style.transform = 'translateY(0)';
+        }, 10);
+
+        // Masquer et supprimer
+        setTimeout(() => {
+            toast.style.opacity = '0';
+            toast.style.transform = 'translateY(-20px)';
+            setTimeout(() => toast.remove(), 500);
+        }, 4000);
+    }
+function saveCVData() {
+        // Logique de sauvegarde locale (inchangée)
+        try {
+            updateStateFromForm(); 
+            
+            const savedCVs = JSON.parse(localStorage.getItem('deos_cvs') || '[]');
+            const index = savedCVs.findIndex(cv => cv.id === appState.cvData.id);
+            
+            // Si c'est un nouveau CV mais que les champs principaux sont vides, ne rien sauver
+            if (index === -1 && !appState.cvData.nom && !appState.cvData.titre) {
+                showNotification('Sauvegarde ignorée', 'Veuillez saisir au moins votre nom et titre avant de sauvegarder un nouveau CV.', 'gray');
+                return;
+            }
+
+            if (index !== -1) {
+                savedCVs[index] = { ...appState.cvData, lastSaved: new Date().toISOString() };
+            } else {
+                appState.cvData.id = Date.now(); 
+                appState.cvData.name = appState.cvData.nom || `CV du ${new Date().toLocaleDateString('fr-FR')}`;
+                savedCVs.push({ ...appState.cvData, lastSaved: new Date().toISOString() });
+            }
+            
+            localStorage.setItem('deos_cvs', JSON.stringify(savedCVs));
+            
+            showNotification('Sauvegarde réussie', `Votre CV ("${appState.cvData.name}") a été mis à jour.`, 'green');
+            loadSavedCVsList(); 
+        } catch(e) {
+            console.error("Erreur de sauvegarde:", e);
+            showNotification('Erreur de sauvegarde', 'Une erreur est survenue lors de la sauvegarde locale.', 'red');
+        }
+    }
+    
+    function loadCVData(cvId) {
+        // Logique de chargement de données 
+        const savedCVs = JSON.parse(localStorage.getItem('deos_cvs') || '[]');
+        const targetCV = savedCVs.find(cv => cv.id === cvId);
+        
+        if (targetCV) {
+            // Charger les données du CV et mettre à jour l'ID si c'est un ancien CV
+            appState.cvData = targetCV;
+            appState.currentTemplateId = targetCV.templateId || 'template1'; 
+            
+            updateFormFields(); 
+            updatePhotoPreview(targetCV.photo);
+            updateCV();
+            showNotification('CV Chargé', `"${targetCV.name}" est maintenant en cours d'édition.`, 'blue');
+            navigateTo('creation');
+        } else {
+            showNotification('Erreur', 'CV non trouvé dans la sauvegarde locale.', 'red');
+        }
+    }
+    
+    function deleteCVData(cvId, event) {
+        // Logique de suppression
+        event.stopPropagation(); 
+        
+        let savedCVs = JSON.parse(localStorage.getItem('deos_cvs') || '[]');
+        const deletedCV = savedCVs.find(cv => cv.id === cvId);
+        savedCVs = savedCVs.filter(cv => cv.id !== cvId);
+        localStorage.setItem('deos_cvs', JSON.stringify(savedCVs));
+        
+        showNotification('CV Supprimé', `"${deletedCV.name || 'CV sans nom'}" a été retiré de vos sauvegardes.`, 'red');
+        loadSavedCVsList();
+                if (appState.cvData.id === cvId) {
+            // Réinitialiser les données si le CV actif est supprimé
+            appState.cvData = JSON.parse(JSON.stringify(BLANK_CV_DATA)); 
+            appState.cvData.id = Date.now(); // Nouvel ID pour le nouveau CV vierge
+            updateFormFields();
+            updateCV();
+            navigateTo('creation');
+        }
+    }
+
+    function loadSavedCVsList() {
+        // Logique d'affichage de la liste des CVs
+        const listContainer = document.getElementById('cv-list-container');
+        const noCvsMessage = document.getElementById('no-saved-cvs');
+        const savedCVs = JSON.parse(localStorage.getItem('deos_cvs') || '[]');
+        
+        if (savedCVs.length === 0) {
+            listContainer.innerHTML = '';
+            noCvsMessage.classList.remove('hidden');
+            return;
+        }
+
+        noCvsMessage.classList.add('hidden');
+        listContainer.innerHTML = savedCVs.map(cv => {
+            const template = templates[cv.templateId] || templates.template1;
+            const lastSavedDate = new Date(cv.lastSaved).toLocaleString('fr-FR');
+            
+            return `
+                <div onclick="loadCVData(${cv.id})" class="app-card border-l-4 cursor-pointer hover:shadow-lg transition-shadow duration-300" style="border-color: ${template.accent};">
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <p class="text-xl font-bold text-gray-900">${cv.name}</p>
+                            <p class="text-sm text-gray-600 mt-1">Template: <span class="font-medium">${template.name}</span></p>
+                            <p class="text-xs text-gray-500 mt-1">Modifié: ${lastSavedDate}</p>
+                        </div>
+                        <button onclick="deleteCVData(${cv.id}, event)" class="p-2 text-red-500 hover:bg-red-50 rounded-full shrink-0">
+                            <i data-lucide="trash-2" class="w-5 h-5"></i>
+                        </button>
+                    </div>
+                </div>
+            `;
+        }).join('');
+        if (window.lucide) window.lucide.createIcons(); 
+    }
+
+    function selectTemplate(id) {
+        // Logique de sélection de template 
+        appState.currentTemplateId = id;
+        
+        document.querySelectorAll('.template-card').forEach(card => {
+            card.classList.remove('ring-4', 'ring-indigo-600', 'shadow-2xl');
+            card.classList.add('shadow-md');
+        });
+        document.getElementById(`template-card-${id}`).classList.add('ring-4', 'ring-indigo-600', 'shadow-2xl');
+        document.getElementById(`template-card-${id}`).classList.remove('shadow-md');
+
+        updateCV();
+        showNotification('Template sélectionné', templates[id].name + ' est appliqué à votre CV.', 'blue');
+    }
+    
+    function setupTemplateSelector() {
+        // Logique de génération des cartes de templates
+        const grid = document.getElementById('template-grid');
+        let html = '';
+        for (const id in templates) {
+            const t = templates[id];
+            const isSelected = id === appState.currentTemplateId;
+            const ringClasses = isSelected ? 'ring-4 ring-indigo-600 shadow-2xl' : 'shadow-md hover:ring-2 hover:ring-indigo-300';
+            const colorStyle = `background-color: ${t.accent};`;
+            const bgColorStyle = `background-color: ${t.bgColor}; color: ${t.bgColor === '#1f2937' ? 'white' : 'black'};`;
+
+            html += `
+                <div id="template-card-${id}" class="template-card app-card cursor-pointer transition-all duration-300 ${ringClasses}" onclick="selectTemplate('${id}')">
+                    <div class="flex items-center space-x-3 mb-2">
+                         <div class="w-3 h-3 rounded-full" style="${colorStyle}"></div>
+                         <h3 class="text-xl font-bold">${t.name}</h3>
+                    </div>
+                    <p class="text-sm text-gray-600 mb-4">${t.description}</p>
+                    <div class="h-24 bg-gray-50 rounded-lg border border-gray-200 flex items-center justify-center text-gray-400 text-xs p-4 overflow-hidden relative" style="${bgColorStyle}">
+                        <div class="w-full h-full p-2 absolute inset-0 text-center text-xs">
+                             <div class="h-2 w-1/2 rounded-full" style="${colorStyle}"></div>
+                             <div class="h-1 w-full mt-2 rounded-full" style="background-color: ${t.accent}33;"></div>
+                             <div class="h-1 w-2/3 mt-1 rounded-full" style="background-color: ${t.accent}33;"></div>
+                             <div class="h-1 mt-4 w-4/5 rounded-full" style="${colorStyle}"></div>
+                             <div class="h-3 w-full mt-1 rounded-lg" style="background-color: ${t.accent}1A;"></div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+        grid.innerHTML = html;
+    }
+
+    // =========================================================
+    // FONCTIONS D'EXPORTATION (PDF & PNG)
+    // =========================================================
+
+    /**
+     * Gère l'export du CV en PNG ou PDF.
+     */
+    async function exportCV(format) {
+        showNotification('Préparation', `Génération de votre CV en ${format.toUpperCase()}...`, 'blue', 10000);
+        
+        // 1. Désactiver les boutons pendant le processus
+        const buttons = [document.getElementById('btn-pdf'), document.getElementById('btn-png')];
+        buttons.forEach(btn => btn.disabled = true);
+        
+        // 2. Cible pour la capture: le conteneur masqué qui a la taille A4
+        const input = document.getElementById('cv-preview-container-hidden');
+        
+        // FIX CLÉ: Afficher temporairement le conteneur hors écran pour que html2canvas puisse le traiter
+        input.classList.remove('hidden');
+        input.style.position = 'absolute';
+        input.style.top = '-9999px';
+        
+        // 3. Effectuer la capture avec html2canvas
+        try {
+            const canvas = await html2canvas(input, {
+                scale: 3, // Augmenter la résolution pour le print
+                useCORS: true, 
+                scrollY: -window.scrollY, 
+                // Assurer que les images et les icônes sont prêtes
+                allowTaint: true 
+            });
+
+            if (format === 'png') {
+                // Export PNG
+                const image = canvas.toDataURL('image/png');
+                const link = document.createElement('a');
+                link.download = `CV-${appState.cvData.nom || 'DeOS'}-${appState.cvData.id}.png`;
+                link.href = image;
+                
+                // Déclenchement du téléchargement
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+                
+                showNotification('Succès PNG', 'Votre CV PNG a été téléchargé !', 'green');
+
+            } else if (format === 'pdf') {
+                // Export PDF
+                const { jsPDF } = window.jspdf;
+                const pdf = new jsPDF('p', 'mm', 'a4');
+                
+                // Dimensions de la page A4 en mm
+                const pdfWidth = 210;
+                const pdfHeight = 297; 
+                
+                // Utiliser l'image du canvas pour le PDF
+                const imgData = canvas.toDataURL('image/jpeg', 1.0); 
+
+                // Ajouter l'image au PDF (l'image est étirée à la taille A4)
+                pdf.addImage(imgData, 'JPEG', 0, 0, pdfWidth, pdfHeight); 
+
+                // Sauvegarder le PDF
+                pdf.save(`CV-${appState.cvData.nom || 'DeOS'}-${appState.cvData.id}.pdf`);
+                showNotification('Succès PDF', 'Votre CV PDF a été téléchargé !', 'green');
+            }
+        
+        } catch (error) {
+            console.error("Erreur d'exportation:", error);
+            showNotification('Erreur', `Échec de l'exportation en ${format.toUpperCase()}. Vérifiez la console.`, 'red');
+        } finally {
+            // Nettoyage: Toujours cacher et réactiver les boutons
+            input.classList.add('hidden');
+            input.style.position = '';
+            input.style.top = '';
+            
+            buttons.forEach(btn => {
+                btn.disabled = false;
+                if (window.lucide) window.lucide.createIcons(); 
+            });
+        }
+    }
+    /**
+     * Démarrage principal après le premier clic utilisateur.
+     */
+    function startAppAfterClick() {
+        // 1. Démarrer le son 
+        playStartupSound();
+        
+        // 2. Démarrer l'animation de splash screen
+        const splash = document.getElementById('splash-screen');
+        const app = document.getElementById('app');
+        
+        // Appliquer la classe 'active' pour déclencher l'animation chorégraphiée (1.8s)
+        splash.classList.add('active');
+        
+        setTimeout(() => {
+            splash.remove();
+            app.classList.remove('hidden');
+            
+            navigateTo('accueil'); 
+            updateCV(); 
+        }, SPLASH_DURATION); // Utiliser la constante 
+    }
+
+    function initializeApp() {
+        // Assurez-vous que le formulaire est vide au démarrage
+        appState.cvData = JSON.parse(JSON.stringify(BLANK_CV_DATA));
+        appState.cvData.id = Date.now(); 
+        
+        setupTemplateSelector();
+        updateFormFields(); 
+        
+        // Attacher le démarrage de l'application au premier clic sur le splash screen
+        const splash = document.getElementById('splash-screen');
+        splash.addEventListener('click', startAppAfterClick, { once: true });
+        splash.addEventListener('touchstart', startAppAfterClick, { once: true });
+    }
+
+
+    window.onload = initializeApp;
+</script>
+</body>
+</html>
+            
