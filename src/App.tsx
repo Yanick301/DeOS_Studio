@@ -6,8 +6,10 @@ import { useStore } from './store/useStore'
 import CreationPage from './features/cv-builder/CreationPage'
 import PreviewPage from './features/cv-builder/PreviewPage'
 import TemplateSelector from './features/templates/TemplateSelector'
+import DashboardPage from './features/dashboard/DashboardPage'
+import LetterPage from './features/letter/LetterPage'
 import { Button } from './components/ui'
-import { ChevronRight, Award, FileText, Layers, Settings } from 'lucide-react'
+import { ChevronRight, Award, FileText, Layers, Settings, Sparkles, Star } from 'lucide-react'
 
 const Accueil = () => {
     const { setCurrentPage } = useStore()
@@ -80,7 +82,9 @@ const App = () => {
                             transition={{ duration: 0.2 }}
                         >
                             {currentPage === 'accueil' && <Accueil />}
+                            {currentPage === 'dashboard' && <DashboardPage />}
                             {currentPage === 'creation' && <CreationPage />}
+                            {currentPage === 'lettre' && <LetterPage />}
                             {currentPage === 'templates' && <TemplateSelector />}
                             {currentPage === 'download' && <PreviewPage />}
                             {currentPage === 'sauvegarde' && (

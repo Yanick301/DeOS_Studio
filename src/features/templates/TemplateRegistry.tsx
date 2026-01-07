@@ -26,6 +26,8 @@ import { Orbit } from './Orbit'
 import { Royale } from './Royale'
 import { Slate } from './Slate'
 import { SlateNight } from './SlateNight'
+import { EliteCouture } from './EliteCouture'
+import { MajestyCouture } from './MajestyCouture'
 import { Elysian } from './Elysian'
 import { Midnight } from './Midnight'
 import { Ivory } from './Ivory'
@@ -45,6 +47,24 @@ import { Summit } from './Summit'
 import { TemplateDefinition } from './types'
 
 export const templates: TemplateDefinition[] = [
+    {
+        id: 'elite-couture',
+        name: 'The Elite (Couture Ed.)',
+        description: 'Design éditorial de haute voltige. Pour les profils hors du commun.',
+        accent: '#d4af37',
+        bgColor: '#ffffff',
+        font: "'Playfair Display', serif",
+        component: EliteCouture
+    },
+    {
+        id: 'majesty-couture',
+        name: 'The Majesty (Couture Ed.)',
+        description: 'Design impérial et solennel. Pour laisser une empreinte indélébile.',
+        accent: '#e2b808',
+        bgColor: '#020617',
+        font: "'Playfair Display', serif",
+        component: MajestyCouture
+    },
     {
         id: 'template1',
         name: 'The Zenith (Elite-Pro)',
