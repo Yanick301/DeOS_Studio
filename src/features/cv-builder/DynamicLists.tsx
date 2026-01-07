@@ -1,5 +1,5 @@
 import React from 'react'
-import { Plus, Trash2, Briefcase, GraduationCap, Languages, Star, Award, Globe, Heart } from 'lucide-react'
+import { Plus, Trash2, Briefcase, GraduationCap, Languages, Star, Award, Globe, Heart, GripVertical } from 'lucide-react'
 import { Card, Button, Input, TextArea, Label } from '@/components/ui'
 import { useStore, Experience, Formation } from '@/store/useStore'
 import { motion, AnimatePresence } from 'framer-motion'
@@ -25,68 +25,77 @@ export const ExperienceList = () => {
     }
 
     return (
-        <Card>
-            <div className="flex items-center justify-between mb-6">
-                <div className="flex items-center gap-3 text-indigo-600">
-                    <Briefcase className="w-6 h-6" />
-                    <h3 className="text-xl font-bold">Expérience Professionnelle</h3>
+        <Card className="p-8 editorial-card">
+            <div className="flex items-center justify-between mb-8">
+                <div className="flex items-center gap-3 text-text-main">
+                    <div className="p-2 bg-slate-900 text-white dark:bg-couture-gold dark:text-slate-900 rounded-lg">
+                        <Briefcase className="w-5 h-5" />
+                    </div>
+                    <h3 className="text-xl font-black font-couture uppercase tracking-tight">Expériences Stratégiques</h3>
                 </div>
-                <Button variant="ghost" className="p-2 h-auto" onClick={handleAdd}>
-                    <Plus className="w-5 h-5" />
-                </Button>
+                <div className="flex items-center gap-2">
+                    <Button variant="ghost" className="p-2 h-auto hover:bg-slate-50 dark:hover:bg-slate-800" onClick={handleAdd}>
+                        <Plus className="w-5 h-5" />
+                    </Button>
+                    <div className="cursor-grab active:cursor-grabbing text-text-muted opacity-20 hover:opacity-100 transition-opacity">
+                        <GripVertical className="w-5 h-5" />
+                    </div>
+                </div>
             </div>
 
-            <div className="space-y-6">
+            <div className="space-y-8">
                 <AnimatePresence>
-                    {cvData.experiences.map((exp, index) => (
+                    {cvData.experiences.map((exp) => (
                         <motion.div
                             key={exp.id}
-                            initial={{ opacity: 0, height: 0 }}
-                            animate={{ opacity: 1, height: 'auto' }}
-                            exit={{ opacity: 0, height: 0 }}
-                            className="relative p-4 border border-gray-100 rounded-xl bg-gray-50/30"
+                            initial={{ opacity: 0, y: 10 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            exit={{ opacity: 0, scale: 0.95 }}
+                            className="relative p-6 border border-card-border bg-slate-50/30 dark:bg-slate-800/20"
                         >
                             <button
                                 onClick={() => removeExperience(exp.id)}
                                 className="absolute top-4 right-4 text-red-400 hover:text-red-600 transition-colors"
-                                title="Supprimer"
                             >
-                                <Trash2 className="w-5 h-5" />
+                                <Trash2 className="w-4 h-4" />
                             </button>
 
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-                                <div>
-                                    <Label>Poste / Titre</Label>
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                                <div className="space-y-2">
+                                    <Label className="text-[10px] font-black uppercase tracking-widest text-text-muted">Poste / Titre</Label>
                                     <Input
+                                        className="rounded-none border-card-border bg-white dark:bg-slate-800 font-bold"
                                         value={exp.titre}
                                         onChange={(e) => handleChange(exp.id, 'titre', e.target.value)}
-                                        placeholder="Ex: Senior Developer"
+                                        placeholder="Ex: Senior Creative Director"
                                     />
                                 </div>
-                                <div>
-                                    <Label>Entreprise</Label>
+                                <div className="space-y-2">
+                                    <Label className="text-[10px] font-black uppercase tracking-widest text-text-muted">Entreprise</Label>
                                     <Input
+                                        className="rounded-none border-card-border bg-white dark:bg-slate-800 font-bold"
                                         value={exp.entreprise}
                                         onChange={(e) => handleChange(exp.id, 'entreprise', e.target.value)}
-                                        placeholder="Ex: Google"
+                                        placeholder="Ex: Maison de Luxe"
                                     />
                                 </div>
                             </div>
-                            <div className="mb-4">
-                                <Label>Durée (Ex: Jan 2020 - Présent)</Label>
+                            <div className="mb-6 space-y-2">
+                                <Label className="text-[10px] font-black uppercase tracking-widest text-text-muted">Temporalité</Label>
                                 <Input
+                                    className="rounded-none border-card-border bg-white dark:bg-slate-800"
                                     value={exp.duree}
                                     onChange={(e) => handleChange(exp.id, 'duree', e.target.value)}
-                                    placeholder="2020 - 2023"
+                                    placeholder="2020 - Présent"
                                 />
                             </div>
-                            <div>
-                                <Label>Description des missions</Label>
+                            <div className="space-y-2">
+                                <Label className="text-[10px] font-black uppercase tracking-widest text-text-muted">Réalisations & Impact</Label>
                                 <TextArea
+                                    className="rounded-none border-card-border bg-white dark:bg-slate-800 min-h-[100px] leading-relaxed italic"
                                     value={exp.description}
                                     onChange={(e) => handleChange(exp.id, 'description', e.target.value)}
-                                    placeholder="Listez vos accomplissements..."
-                                    className="min-h-[80px]"
+                                    placeholder="Décrivez vos accomplissements les plus marquants..."
                                 />
                             </div>
                         </motion.div>
@@ -94,7 +103,7 @@ export const ExperienceList = () => {
                 </AnimatePresence>
 
                 {cvData.experiences.length === 0 && (
-                    <p className="text-center text-gray-400 py-4 italic">Aucune expérience ajoutée.</p>
+                    <p className="text-center text-text-muted py-10 italic font-serif">Aucune expérience enregistrée dans l'atelier.</p>
                 )}
             </div>
         </Card>
@@ -121,56 +130,65 @@ export const FormationList = () => {
     }
 
     return (
-        <Card>
-            <div className="flex items-center justify-between mb-6">
-                <div className="flex items-center gap-3 text-indigo-600">
-                    <GraduationCap className="w-6 h-6" />
-                    <h3 className="text-xl font-bold">Formation Académique</h3>
+        <Card className="p-8 editorial-card">
+            <div className="flex items-center justify-between mb-8">
+                <div className="flex items-center gap-3 text-text-main">
+                    <div className="p-2 bg-slate-900 text-white dark:bg-couture-gold dark:text-slate-900 rounded-lg">
+                        <GraduationCap className="w-5 h-5" />
+                    </div>
+                    <h3 className="text-xl font-black font-couture uppercase tracking-tight">Formation Académique</h3>
                 </div>
-                <Button variant="ghost" className="p-2 h-auto" onClick={handleAdd}>
-                    <Plus className="w-5 h-5" />
-                </Button>
+                <div className="flex items-center gap-2">
+                    <Button variant="ghost" className="p-2 h-auto hover:bg-slate-50 dark:hover:bg-slate-800" onClick={handleAdd}>
+                        <Plus className="w-5 h-5" />
+                    </Button>
+                    <div className="cursor-grab active:cursor-grabbing text-text-muted opacity-20 hover:opacity-100 transition-opacity">
+                        <GripVertical className="w-5 h-5" />
+                    </div>
+                </div>
             </div>
 
-            <div className="space-y-6">
+            <div className="space-y-8">
                 <AnimatePresence>
                     {cvData.formations.map((f) => (
                         <motion.div
                             key={f.id}
-                            initial={{ opacity: 0, height: 0 }}
-                            animate={{ opacity: 1, height: 'auto' }}
-                            exit={{ opacity: 0, height: 0 }}
-                            className="relative p-4 border border-gray-100 rounded-xl bg-gray-50/30"
+                            initial={{ opacity: 0, y: 10 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            exit={{ opacity: 0, scale: 0.95 }}
+                            className="relative p-6 border border-card-border bg-slate-50/30 dark:bg-slate-800/20"
                         >
                             <button
                                 onClick={() => removeFormation(f.id)}
                                 className="absolute top-4 right-4 text-red-400 hover:text-red-600 transition-colors"
-                                title="Supprimer"
                             >
-                                <Trash2 className="w-5 h-5" />
+                                <Trash2 className="w-4 h-4" />
                             </button>
 
-                            <div className="space-y-4">
-                                <div>
-                                    <Label>Diplôme / Titre</Label>
+                            <div className="space-y-6">
+                                <div className="space-y-2">
+                                    <Label className="text-[10px] font-black uppercase tracking-widest text-text-muted">Diplôme / Titre Obtenu</Label>
                                     <Input
+                                        className="rounded-none border-card-border bg-white dark:bg-slate-800 font-bold"
                                         value={f.titre}
                                         onChange={(e) => handleChange(f.id, 'titre', e.target.value)}
-                                        placeholder="Ex: Master Informatique"
+                                        placeholder="Ex: Master en Design de Mode"
                                     />
                                 </div>
-                                <div className="grid grid-cols-2 gap-4">
-                                    <div>
-                                        <Label>Établissement</Label>
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                    <div className="space-y-2">
+                                        <Label className="text-[10px] font-black uppercase tracking-widest text-text-muted">Institution</Label>
                                         <Input
+                                            className="rounded-none border-card-border bg-white dark:bg-slate-800"
                                             value={f.etablissement}
                                             onChange={(e) => handleChange(f.id, 'etablissement', e.target.value)}
-                                            placeholder="Ex: Sorbonne"
+                                            placeholder="Ex: Institut des Arts"
                                         />
                                     </div>
-                                    <div>
-                                        <Label>Année</Label>
+                                    <div className="space-y-2">
+                                        <Label className="text-[10px] font-black uppercase tracking-widest text-text-muted">Année d'obtention</Label>
                                         <Input
+                                            className="rounded-none border-card-border bg-white dark:bg-slate-800"
                                             value={f.annee}
                                             onChange={(e) => handleChange(f.id, 'annee', e.target.value)}
                                             placeholder="Ex: 2022"
@@ -183,7 +201,7 @@ export const FormationList = () => {
                 </AnimatePresence>
 
                 {cvData.formations.length === 0 && (
-                    <p className="text-center text-gray-400 py-4 italic">Aucune formation ajoutée.</p>
+                    <p className="text-center text-text-muted py-10 italic font-serif">Aucun diplôme répertorié pour le moment.</p>
                 )}
             </div>
         </Card>
@@ -213,37 +231,47 @@ export const LanguageList = () => {
     }
 
     return (
-        <Card>
-            <div className="flex items-center justify-between mb-6">
-                <div className="flex items-center gap-3 text-indigo-600">
-                    <Languages className="w-6 h-6" />
-                    <h3 className="text-xl font-bold">Langues</h3>
+        <Card className="p-8 editorial-card">
+            <div className="flex items-center justify-between mb-8">
+                <div className="flex items-center gap-3 text-text-main">
+                    <div className="p-2 bg-slate-900 text-white dark:bg-couture-gold dark:text-slate-900 rounded-lg">
+                        <Languages className="w-5 h-5" />
+                    </div>
+                    <h3 className="text-xl font-black font-couture uppercase tracking-tight">Maîtrise Linguistique</h3>
                 </div>
-                <Button variant="ghost" className="p-2 h-auto" onClick={handleAdd}>
-                    <Plus className="w-5 h-5" />
-                </Button>
+                <div className="flex items-center gap-2">
+                    <Button variant="ghost" className="p-2 h-auto hover:bg-slate-50 dark:hover:bg-slate-800" onClick={handleAdd}>
+                        <Plus className="w-5 h-5" />
+                    </Button>
+                    <div className="cursor-grab active:cursor-grabbing text-text-muted opacity-20 hover:opacity-100 transition-opacity">
+                        <GripVertical className="w-5 h-5" />
+                    </div>
+                </div>
             </div>
-            <div className="space-y-3">
+
+            <div className="space-y-4">
                 {cvData.languages.map((lang, i) => (
-                    <div key={i} className="flex gap-2 items-end">
-                        <div className="flex-1">
-                            <Label>Langue</Label>
+                    <div key={i} className="flex gap-4 items-end bg-slate-50/50 dark:bg-slate-800/10 p-4 border border-card-border">
+                        <div className="flex-1 space-y-2">
+                            <Label className="text-[10px] font-black uppercase tracking-widest text-text-muted">Langue</Label>
                             <Input
+                                className="rounded-none border-card-border bg-white dark:bg-slate-800"
                                 value={lang.name}
                                 onChange={(e) => handleChange(i, 'name', e.target.value)}
-                                placeholder="Ex: Anglais"
+                                placeholder="Français, Anglais..."
                             />
                         </div>
-                        <div className="w-32">
-                            <Label>Niveau</Label>
+                        <div className="w-32 space-y-2">
+                            <Label className="text-[10px] font-black uppercase tracking-widest text-text-muted">Niveau</Label>
                             <Input
+                                className="rounded-none border-card-border bg-white dark:bg-slate-800 font-mono text-xs"
                                 value={lang.level}
                                 onChange={(e) => handleChange(i, 'level', e.target.value)}
-                                placeholder="Ex: C1"
+                                placeholder="C2, B2..."
                             />
                         </div>
-                        <Button variant="ghost" className="p-3 h-[46px]" onClick={() => handleRemove(i)}>
-                            <Trash2 className="w-5 h-5 text-red-400" />
+                        <Button variant="ghost" className="p-3 h-[46px] text-red-400 hover:text-red-600" onClick={() => handleRemove(i)}>
+                            <Trash2 className="w-5 h-5" />
                         </Button>
                     </div>
                 ))}
@@ -269,27 +297,35 @@ export const InterestList = () => {
     }
 
     return (
-        <Card>
-            <div className="flex items-center justify-between mb-6">
-                <div className="flex items-center gap-3 text-indigo-600">
-                    <Heart className="w-6 h-6" />
-                    <h3 className="text-xl font-bold">Centres d'intérêt</h3>
+        <Card className="p-8 editorial-card">
+            <div className="flex items-center justify-between mb-8">
+                <div className="flex items-center gap-3 text-text-main">
+                    <div className="p-2 bg-slate-900 text-white dark:bg-couture-gold dark:text-slate-900 rounded-lg">
+                        <Heart className="w-5 h-5" />
+                    </div>
+                    <h3 className="text-xl font-black font-couture uppercase tracking-tight">Centres d'Intérêt</h3>
                 </div>
-                <Button variant="ghost" className="p-2 h-auto" onClick={handleAdd}>
-                    <Plus className="w-5 h-5" />
-                </Button>
+                <div className="flex items-center gap-2">
+                    <Button variant="ghost" className="p-2 h-auto hover:bg-slate-50 dark:hover:bg-slate-800" onClick={handleAdd}>
+                        <Plus className="w-5 h-5" />
+                    </Button>
+                    <div className="cursor-grab active:cursor-grabbing text-text-muted opacity-20 hover:opacity-100 transition-opacity">
+                        <GripVertical className="w-5 h-5" />
+                    </div>
+                </div>
             </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {cvData.interests.map((interest, i) => (
-                    <div key={i} className="flex gap-2 items-center">
+                    <div key={i} className="flex gap-2 items-center bg-slate-50/50 dark:bg-slate-800/10 p-2 border border-card-border">
                         <Input
+                            className="rounded-none border-none bg-transparent"
                             value={interest}
                             onChange={(e) => handleChange(i, e.target.value)}
-                            placeholder="Ex: Photographie"
+                            placeholder="Ex: Photographie éditioriale"
                         />
-                        <Button variant="ghost" className="p-2" onClick={() => handleRemove(i)}>
-                            <Trash2 className="w-5 h-5 text-red-400" />
-                        </Button>
+                        <button onClick={() => handleRemove(i)} className="p-2 text-red-300 hover:text-red-600 transition-colors">
+                            <Trash2 className="w-4 h-4" />
+                        </button>
                     </div>
                 ))}
             </div>
@@ -314,27 +350,35 @@ export const QualityList = () => {
     }
 
     return (
-        <Card>
-            <div className="flex items-center justify-between mb-6">
-                <div className="flex items-center gap-3 text-indigo-600">
-                    <Star className="w-6 h-6" />
-                    <h3 className="text-xl font-bold">Qualités / Soft Skills</h3>
+        <Card className="p-8 editorial-card">
+            <div className="flex items-center justify-between mb-8">
+                <div className="flex items-center gap-3 text-text-main">
+                    <div className="p-2 bg-slate-900 text-white dark:bg-couture-gold dark:text-slate-900 rounded-lg">
+                        <Star className="w-5 h-5" />
+                    </div>
+                    <h3 className="text-xl font-black font-couture uppercase tracking-tight">Signes Distinctifs</h3>
                 </div>
-                <Button variant="ghost" className="p-2 h-auto" onClick={handleAdd}>
-                    <Plus className="w-5 h-5" />
-                </Button>
+                <div className="flex items-center gap-2">
+                    <Button variant="ghost" className="p-2 h-auto hover:bg-slate-50 dark:hover:bg-slate-800" onClick={handleAdd}>
+                        <Plus className="w-5 h-5" />
+                    </Button>
+                    <div className="cursor-grab active:cursor-grabbing text-text-muted opacity-20 hover:opacity-100 transition-opacity">
+                        <GripVertical className="w-5 h-5" />
+                    </div>
+                </div>
             </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {cvData.qualities.map((quality, i) => (
-                    <div key={i} className="flex gap-2 items-center">
+                    <div key={i} className="flex gap-2 items-center bg-slate-50/50 dark:bg-slate-800/10 p-2 border border-card-border">
                         <Input
+                            className="rounded-none border-none bg-transparent font-bold"
                             value={quality}
                             onChange={(e) => handleChange(i, e.target.value)}
-                            placeholder="Ex: Leadership"
+                            placeholder="Ex: Leadership stratégique"
                         />
-                        <Button variant="ghost" className="p-2" onClick={() => handleRemove(i)}>
-                            <Trash2 className="w-5 h-5 text-red-400" />
-                        </Button>
+                        <button onClick={() => handleRemove(i)} className="p-2 text-red-300 hover:text-red-600 transition-colors">
+                            <Trash2 className="w-4 h-4" />
+                        </button>
                     </div>
                 ))}
             </div>
@@ -365,37 +409,46 @@ export const CertificateList = () => {
     }
 
     return (
-        <Card>
-            <div className="flex items-center justify-between mb-6">
-                <div className="flex items-center gap-3 text-indigo-600">
-                    <Award className="w-6 h-6" />
-                    <h3 className="text-xl font-bold">Certificats</h3>
+        <Card className="p-8 editorial-card">
+            <div className="flex items-center justify-between mb-8">
+                <div className="flex items-center gap-3 text-text-main">
+                    <div className="p-2 bg-slate-900 text-white dark:bg-couture-gold dark:text-slate-900 rounded-lg">
+                        <Award className="w-5 h-5" />
+                    </div>
+                    <h3 className="text-xl font-black font-couture uppercase tracking-tight">Certifications & Titres</h3>
                 </div>
-                <Button variant="ghost" className="p-2 h-auto" onClick={handleAdd}>
-                    <Plus className="w-5 h-5" />
-                </Button>
+                <div className="flex items-center gap-2">
+                    <Button variant="ghost" className="p-2 h-auto hover:bg-slate-50 dark:hover:bg-slate-800" onClick={handleAdd}>
+                        <Plus className="w-5 h-5" />
+                    </Button>
+                    <div className="cursor-grab active:cursor-grabbing text-text-muted opacity-20 hover:opacity-100 transition-opacity">
+                        <GripVertical className="w-5 h-5" />
+                    </div>
+                </div>
             </div>
-            <div className="space-y-3">
+            <div className="space-y-4">
                 {cvData.certificates.map((cert, i) => (
-                    <div key={i} className="flex gap-2 items-end">
-                        <div className="flex-1">
-                            <Label>Titre du certificat</Label>
+                    <div key={i} className="flex gap-4 items-end bg-slate-50/50 dark:bg-slate-800/10 p-4 border border-card-border">
+                        <div className="flex-1 space-y-2">
+                            <Label className="text-[10px] font-black uppercase tracking-widest text-text-muted">Titre du Certificat</Label>
                             <Input
+                                className="rounded-none border-card-border bg-white dark:bg-slate-800"
                                 value={cert.title}
                                 onChange={(e) => handleChange(i, 'title', e.target.value)}
-                                placeholder="Ex: AWS Certified Solutions Architect"
+                                placeholder="AWS, PMP, GMAT..."
                             />
                         </div>
-                        <div className="w-32">
-                            <Label>Année</Label>
+                        <div className="w-32 space-y-2">
+                            <Label className="text-[10px] font-black uppercase tracking-widest text-text-muted">Année</Label>
                             <Input
+                                className="rounded-none border-card-border bg-white dark:bg-slate-800"
                                 value={cert.year}
                                 onChange={(e) => handleChange(i, 'year', e.target.value)}
                                 placeholder="2023"
                             />
                         </div>
-                        <Button variant="ghost" className="p-3 h-[46px]" onClick={() => handleRemove(i)}>
-                            <Trash2 className="w-5 h-5 text-red-400" />
+                        <Button variant="ghost" className="p-3 h-[46px] text-red-400 hover:text-red-600" onClick={() => handleRemove(i)}>
+                            <Trash2 className="w-5 h-5" />
                         </Button>
                     </div>
                 ))}
@@ -427,40 +480,49 @@ export const ProjectList = () => {
     }
 
     return (
-        <Card>
-            <div className="flex items-center justify-between mb-6">
-                <div className="flex items-center gap-3 text-indigo-600">
-                    <Globe className="w-6 h-6" />
-                    <h3 className="text-xl font-bold">Projets</h3>
+        <Card className="p-8 editorial-card">
+            <div className="flex items-center justify-between mb-8">
+                <div className="flex items-center gap-3 text-text-main">
+                    <div className="p-2 bg-slate-900 text-white dark:bg-couture-gold dark:text-slate-900 rounded-lg">
+                        <Globe className="w-5 h-5" />
+                    </div>
+                    <h3 className="text-xl font-black font-couture uppercase tracking-tight">Grands Projets</h3>
                 </div>
-                <Button variant="ghost" className="p-2 h-auto" onClick={handleAdd}>
-                    <Plus className="w-5 h-5" />
-                </Button>
+                <div className="flex items-center gap-2">
+                    <Button variant="ghost" className="p-2 h-auto hover:bg-slate-50 dark:hover:bg-slate-800" onClick={handleAdd}>
+                        <Plus className="w-5 h-5" />
+                    </Button>
+                    <div className="cursor-grab active:cursor-grabbing text-text-muted opacity-20 hover:opacity-100 transition-opacity">
+                        <GripVertical className="w-5 h-5" />
+                    </div>
+                </div>
             </div>
-            <div className="space-y-4">
+            <div className="space-y-6">
                 {cvData.projects.map((project, i) => (
-                    <div key={i} className="relative p-4 border border-gray-100 rounded-xl bg-gray-50/30">
+                    <div key={i} className="relative p-6 border border-card-border bg-slate-50/30 dark:bg-slate-800/20">
                         <button
                             onClick={() => handleRemove(i)}
                             className="absolute top-4 right-4 text-red-400 hover:text-red-600 transition-colors"
                         >
-                            <Trash2 className="w-5 h-5" />
+                            <Trash2 className="w-4 h-4" />
                         </button>
-                        <div className="space-y-4">
-                            <div>
-                                <Label>Titre du Projet</Label>
+                        <div className="space-y-6">
+                            <div className="space-y-2">
+                                <Label className="text-[10px] font-black uppercase tracking-widest text-text-muted">Titre de l'Œuvre / Projet</Label>
                                 <Input
+                                    className="rounded-none border-card-border bg-white dark:bg-slate-800 font-bold"
                                     value={project.title}
                                     onChange={(e) => handleChange(i, 'title', e.target.value)}
-                                    placeholder="Ex: DeOS Studio App"
+                                    placeholder="Ex: DeOS Signature Suite"
                                 />
                             </div>
-                            <div>
-                                <Label>Lien / Description courte</Label>
+                            <div className="space-y-2">
+                                <Label className="text-[10px] font-black uppercase tracking-widest text-text-muted">Lien d'Accès ou Rapport</Label>
                                 <Input
+                                    className="rounded-none border-card-border bg-white dark:bg-slate-800 font-mono text-xs"
                                     value={project.link}
                                     onChange={(e) => handleChange(i, 'link', e.target.value)}
-                                    placeholder="https://github.com/..."
+                                    placeholder="https://deos.studio/p/..."
                                 />
                             </div>
                         </div>

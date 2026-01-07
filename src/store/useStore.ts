@@ -44,6 +44,16 @@ export interface LetterData {
     content: string
 }
 
+export interface Application {
+    id: string
+    company: string
+    position: string
+    status: 'applied' | 'interview' | 'offer' | 'rejected'
+    date: string
+    note: string
+    cvVersionId: string // To link specific CV version
+}
+
 interface AppState {
     currentPage: string
     currentTemplateId: string
@@ -53,10 +63,14 @@ interface AppState {
     jobDescription: string
     dashboardScore: number
     language: 'fr' | 'en'
+    theme: 'light' | 'dark'
+    sectionOrder: string[]
+    applications: Application[]
     setCurrentPage: (page: string) => void
     setTemplate: (id: string) => void
     setLetterTemplate: (id: string) => void
     setLanguage: (lang: 'fr' | 'en') => void
+    setTheme: (theme: 'light' | 'dark') => void
     updateCVData: (data: Partial<CVData>) => void
     updateLetterData: (data: Partial<LetterData>) => void
     setJobDescription: (desc: string) => void
@@ -65,6 +79,10 @@ interface AppState {
     removeExperience: (id: number) => void
     addFormation: (form: Formation) => void
     removeFormation: (id: number) => void
+    setSectionOrder: (order: string[]) => void
+    addApplication: (app: Application) => void
+    updateApplication: (id: string, data: Partial<Application>) => void
+    removeApplication: (id: string) => void
 }
 
 const DEFAULT_CV_DATA: CVData = {
@@ -106,10 +124,14 @@ export const useStore = create<AppState>()(
             jobDescription: '',
             dashboardScore: 0,
             language: 'fr',
+            theme: 'light',
+            sectionOrder: ['identity', 'experience', 'formation', 'languages', 'qualities', 'interests', 'certificates', 'projects', 'skills'],
+            applications: [],
             setCurrentPage: (page) => set({ currentPage: page }),
             setTemplate: (id) => set({ currentTemplateId: id }),
             setLetterTemplate: (id) => set({ currentLetterTemplateId: id }),
             setLanguage: (lang) => set({ language: lang }),
+            setTheme: (theme) => set({ theme }),
             updateCVData: (data) => set((state) => ({ cvData: { ...state.cvData, ...data } })),
             updateLetterData: (data) => set((state) => ({ letterData: { ...state.letterData, ...data } })),
             setJobDescription: (desc) => set({ jobDescription: desc }),
@@ -118,6 +140,14 @@ export const useStore = create<AppState>()(
             removeExperience: (id) => set((state) => ({ cvData: { ...state.cvData, experiences: state.cvData.experiences.filter(e => e.id !== id) } })),
             addFormation: (form) => set((state) => ({ cvData: { ...state.cvData, formations: [...state.cvData.formations, form] } })),
             removeFormation: (id) => set((state) => ({ cvData: { ...state.cvData, formations: state.cvData.formations.filter(f => f.id !== id) } })),
+            setSectionOrder: (order) => set({ sectionOrder: order }),
+            addApplication: (app) => set((state) => ({ applications: [...state.applications, app] })),
+            updateApplication: (id, data) => set((state) => ({
+                applications: state.applications.map((app) => (app.id === id ? { ...app, ...data } : app)),
+            })),
+            removeApplication: (id) => set((state) => ({
+                applications: state.applications.filter((app) => app.id !== id),
+            })),
         }),
         {
             name: 'deos-studio-storage',
