@@ -1,0 +1,31 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+  }
+
+  body {
+    @apply bg-[#f5f7f9] text-[#1c1c1e] selection:bg-indigo-100 selection:text-indigo-900;
+  }
+
+  /* Support for high-vibrancy colors on compatible displays */
+  @supports (color: color(display-p3 1 1 1)) {
+    :root {
+      --indigo-600-p3: color(display-p3 0.31 0.27 0.9);
+    }
+  }
+}
+
+:root {
+  --primary: #4f46e5;
+  --primary-dark: #4338ca;
+}
+
+-webkit-font-smoothing: antialiased;
+-moz-osx-font-smoothing: grayscale;
+}
