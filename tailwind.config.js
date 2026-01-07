@@ -7,12 +7,15 @@ export default {
     theme: {
         extend: {
             colors: {
-                primary: {
-                    DEFAULT: '#4f46e5',
-                    dark: '#4338ca',
-                    light: '#6366f1',
+                primary: 'var(--primary)',
+                secondary: 'var(--secondary)',
+                background: 'var(--background)',
+                'couture-gold': 'var(--couture-gold)',
+                'couture-slate': 'var(--couture-slate)',
+                'couture-cream': 'var(--couture-cream)',
+                accent: {
+                    DEFAULT: '#f59e0b',
                 },
-                accent: '#f59e0b',
             },
             animation: {
                 'fade-in': 'fadeIn 0.5s ease-out forwards',
