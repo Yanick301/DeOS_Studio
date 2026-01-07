@@ -1,12 +1,31 @@
 import React from 'react'
 import { motion } from 'framer-motion'
-import { User, Briefcase, BookOpen, Settings, Languages, Award, Globe, Plus, Trash2, Camera, Mail, Phone, MapPin, Sparkles, Star, Brain } from 'lucide-react'
+import { User, Briefcase, BookOpen, Settings, Languages, Award, Globe, Plus, Trash2, Camera, Mail, Phone, MapPin, Sparkles, Star, Brain, Zap } from 'lucide-react'
 import { useStore } from '@/store/useStore'
 import { Card, Button, Input, TextArea, Label } from '@/components/ui'
 import { ExperienceList, FormationList, LanguageList, InterestList, QualityList, CertificateList, ProjectList } from './DynamicLists'
+import { FIELD_SUGGESTIONS } from '@/data/suggestions'
+import { AtelierConcierge } from './AtelierConcierge'
+import { AvatarGallery } from './AvatarGallery'
+import { Lightbulb } from 'lucide-react'
 
 const CreationPage = () => {
-    const { cvData, updateCVData } = useStore()
+    const { cvData, updateCVData, language, setLanguage } = useStore()
+    const [showGallery, setShowGallery] = React.useState(false)
+
+    const SuggestionTrigger = ({ field, onSelect }: { field: keyof typeof FIELD_SUGGESTIONS, onSelect: (val: string) => void }) => (
+        <div className="mt-2 flex flex-wrap gap-2">
+            {FIELD_SUGGESTIONS[field].slice(0, 3).map((s, i) => (
+                <button
+                    key={i}
+                    onClick={() => onSelect(s)}
+                    className="text-[9px] font-black uppercase tracking-widest text-slate-400 border border-slate-100 px-3 py-1 hover:border-couture-gold hover:text-couture-gold transition-all"
+                >
+                    + {s.length > 30 ? s.substring(0, 30) + '...' : s}
+                </button>
+            ))}
+        </div>
+    )
 
     const containerVariants = {
         hidden: { opacity: 0, y: 20 },
@@ -20,9 +39,30 @@ const CreationPage = () => {
             animate="visible"
             className="space-y-8 pb-10"
         >
-            <header className="text-center">
-                <h2 className="text-3xl font-black text-gray-900 font-couture">Créez votre Chef-d'œuvre</h2>
-                <p className="text-gray-500 mt-2">Remplissez les sections et prévisualisez en direct.</p>
+            <header className="flex flex-col md:flex-row items-center justify-between gap-6 border-b border-slate-100 pb-10">
+                <div className="text-left">
+                    <h2 className="text-3xl font-black text-gray-900 font-couture">Atelier de Création</h2>
+                    <p className="text-gray-500 mt-2 font-serif italic">"Gravez votre identité dans l'excellence."</p>
+                </div>
+
+                <div className="flex bg-slate-100 p-1.5 rounded-full ring-4 ring-slate-50">
+                    <button
+                        onClick={() => setLanguage('fr')}
+                        className={`px-6 py-2 text-[10px] font-black uppercase tracking-widest transition-all rounded-full ${language === 'fr' ? 'bg-white shadow-lg text-slate-900' : 'text-slate-400 hover:text-slate-600'}`}
+                    >
+                        Français
+                    </button>
+                    <button
+                        onClick={() => setLanguage('en')}
+                        className={`px-6 py-2 text-[10px] font-black uppercase tracking-widest transition-all rounded-full ${language === 'en' ? 'bg-white shadow-lg text-slate-900' : 'text-slate-400 hover:text-slate-600'}`}
+                    >
+                        English
+                    </button>
+                    <div className="ml-2 px-2 py-2 flex items-center bg-couture-gold/20 rounded-full">
+                        <Zap className="w-3 h-3 text-couture-gold fill-current" />
+                        <span className="text-[8px] font-black text-couture-gold ml-1">AI</span>
+                    </div>
+                </div>
             </header>
 
             {/* Section Information Personnelles */}
@@ -68,9 +108,16 @@ const CreationPage = () => {
                                 <Button
                                     variant="secondary"
                                     className="text-[10px] h-9 px-4 rounded-none border-slate-200 hover:bg-slate-50"
+                                    onClick={() => setShowGallery(true)}
+                                >
+                                    Galerie
+                                </Button>
+                                <Button
+                                    variant="ghost"
+                                    className="text-[10px] h-9 px-4 rounded-none text-red-400 hover:text-red-600"
                                     onClick={() => updateCVData({ photo: '' })}
                                 >
-                                    Supprimer
+                                    Effacer
                                 </Button>
                             </div>
                         </div>
@@ -87,24 +134,32 @@ const CreationPage = () => {
                             />
                         </div>
                         <div className="space-y-2">
-                            <Label className="text-[10px] font-black uppercase tracking-widest text-slate-400">Titre de l'expertise</Label>
+                            <div className="flex justify-between items-center">
+                                <Label className="text-[10px] font-black uppercase tracking-widest text-slate-400">Titre de l'expertise</Label>
+                                <Lightbulb className="w-3 h-3 text-couture-gold opacity-50" />
+                            </div>
                             <Input
                                 className="rounded-none border-slate-100 bg-slate-50/50 focus:bg-white transition-all py-6 font-bold"
                                 value={cvData.titre}
                                 onChange={(e) => updateCVData({ titre: e.target.value })}
                                 placeholder="Ex: Senior Creative Director"
                             />
+                            <SuggestionTrigger field="titre" onSelect={(v) => updateCVData({ titre: v })} />
                         </div>
                     </div>
 
                     <div className="space-y-2">
-                        <Label className="text-[10px] font-black uppercase tracking-widest text-slate-400">Résumé du Profil (Pitch)</Label>
+                        <div className="flex justify-between items-center">
+                            <Label className="text-[10px] font-black uppercase tracking-widest text-slate-400">Résumé du Profil (Pitch)</Label>
+                            <Lightbulb className="w-3 h-3 text-couture-gold opacity-50" />
+                        </div>
                         <TextArea
                             className="rounded-none border-slate-100 bg-slate-50/50 focus:bg-white transition-all min-h-[120px] leading-relaxed italic"
                             value={cvData.profilSummary}
                             onChange={(e) => updateCVData({ profilSummary: e.target.value })}
                             placeholder="Écrivez une introduction qui marque les esprits..."
                         />
+                        <SuggestionTrigger field="profilSummary" onSelect={(v) => updateCVData({ profilSummary: v })} />
                     </div>
 
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -170,7 +225,17 @@ const CreationPage = () => {
                     onChange={(e) => updateCVData({ skills: e.target.value })}
                     placeholder="LISTEZ VOS COMPÉTENCES, SÉPARÉES PAR DES VIRGULES..."
                 />
+                <SuggestionTrigger field="skills" onSelect={(v) => updateCVData({ skills: v })} />
             </Card>
+
+            <AtelierConcierge />
+            {showGallery && (
+                <AvatarGallery
+                    current={cvData.photo}
+                    onSelect={(url) => updateCVData({ photo: url })}
+                    onClose={() => setShowGallery(false)}
+                />
+            )}
         </motion.div>
     )
 }

@@ -1,6 +1,6 @@
 import React from 'react'
 import { motion } from 'framer-motion'
-import { Home, Edit3, Save, Layout as LayoutIcon, Download, PieChart, MessageSquare, Menu } from 'lucide-react'
+import { Home, Edit3, Save, Layout as LayoutIcon, Download, PieChart, DollarSign, MessageSquare, Menu } from 'lucide-react'
 import { useStore } from '@/store/useStore'
 import { clsx, type ClassValue } from 'clsx'
 import { twMerge } from 'tailwind-merge'
@@ -23,6 +23,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
         { id: 'creation', icon: Edit3, label: 'CV' },
         { id: 'lettre', icon: MessageSquare, label: 'Lettre' },
         { id: 'templates', icon: LayoutIcon, label: 'Design' },
+        { id: 'business', icon: DollarSign, label: 'Business' },
         { id: 'download', icon: Download, label: 'Export' },
     ]
 

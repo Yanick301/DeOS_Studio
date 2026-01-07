@@ -1,13 +1,15 @@
 import React from 'react'
 import { TemplateProps } from './types'
 import { Crown, Sparkles, Award, Star, ShieldCheck, Mail, Phone, MapPin } from 'lucide-react'
+import { CVData } from '@/store/useStore'
+import { QRCodeCanvas } from 'qrcode.react'
 
 export const MajestyCouture: React.FC<TemplateProps> = ({ data, accentColor, bgColor, fontFamily }) => {
     const skills = data.skills.split(',').map(s => s.trim()).filter(s => s)
 
     return (
         <div
-            className="h-[1123px] w-[794px] overflow-hidden flex flex-col p-20"
+            className="h-[1123px] w-[794px] overflow-hidden flex flex-col p-20 relative"
             style={{ backgroundColor: '#020617', color: '#f8fafc', fontFamily: "'Playfair Display', serif" }}
         >
             <div className="absolute top-0 left-0 w-full h-2 bg-couture-gold" style={{ backgroundColor: accentColor }} />
@@ -114,9 +116,16 @@ export const MajestyCouture: React.FC<TemplateProps> = ({ data, accentColor, bgC
                 </div>
             </div>
 
-            <footer className="mt-12 flex justify-center opacity-10">
-                <Crown className="w-12 h-12" />
-            </footer>
+            <div className="mt-16 flex flex-col items-center gap-4 border-t border-white/5 pt-10 opacity-60">
+                <div className="bg-white p-2 rounded-xl">
+                    <QRCodeCanvas
+                        value={`https://deos-studio.com/verify/${data.nom?.replace(/\s+/g, '') || 'doc'}`}
+                        size={50}
+                        level="M"
+                    />
+                </div>
+                <p className="text-[8px] uppercase tracking-[0.6em]">Authentification_Par_DeOS</p>
+            </div>
         </div>
     )
 }

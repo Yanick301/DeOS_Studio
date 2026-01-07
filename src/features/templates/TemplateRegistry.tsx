@@ -463,4 +463,4 @@ export const templates: TemplateDefinition[] = [
     }
 ]
 
-export const getTemplateById = (id: string) => templates.find(t => t.id === id) || templates[0]
+export const getTemplate = (id: string) => templates.find(t => t.id === id) || templates[0]

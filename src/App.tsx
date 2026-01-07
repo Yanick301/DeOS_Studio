@@ -8,8 +8,9 @@ import PreviewPage from './features/cv-builder/PreviewPage'
 import TemplateSelector from './features/templates/TemplateSelector'
 import DashboardPage from './features/dashboard/DashboardPage'
 import LetterPage from './features/letter/LetterPage'
+import BusinessPage from './features/business/BusinessPage'
 import { Button } from './components/ui'
-import { ChevronRight, Award, FileText, Layers, Settings, Sparkles, Star, Brain } from 'lucide-react'
+import { ChevronRight, Award, FileText, Layers, Settings, Sparkles, Star, Brain, MessageSquare } from 'lucide-react'
 
 const Accueil = () => {
     const { setCurrentPage } = useStore()
@@ -44,16 +45,48 @@ const Accueil = () => {
                     "Votre carrière mérite plus qu'un simple document. Offrez-lui un destin d'exception."
                 </p>
 
-                <div className="flex flex-col gap-4 max-w-sm mx-auto">
-                    <Button
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-2xl mx-auto px-4">
+                    <motion.button
+                        whileHover={{ y: -5 }}
+                        whileTap={{ scale: 0.98 }}
                         onClick={() => setCurrentPage('creation')}
-                        className="py-8 text-xl font-black bg-slate-900 hover:bg-black shadow-[0_20px_40px_rgba(0,0,0,0.15)] rounded-none group relative overflow-hidden"
+                        className="group relative p-8 bg-slate-900 text-left overflow-hidden shadow-2xl"
                     >
-                        <span className="relative z-10 flex items-center justify-center gap-2">
-                            Démarrer ma Signature <ChevronRight className="w-6 h-6 group-hover:translate-x-1 transition-transform" />
-                        </span>
-                        <div className="absolute inset-0 bg-couture-gold/10 transform -translateX-full group-hover:translateX-0 transition-transform duration-500" />
-                    </Button>
+                        <div className="relative z-10">
+                            <Layers className="w-8 h-8 text-couture-gold mb-6" />
+                            <h3 className="text-2xl font-black text-white uppercase tracking-tight mb-2">Studio CV</h3>
+                            <p className="text-sm text-slate-400 font-medium">Créez un CV d'impact avec l'IA stratégique.</p>
+                            <div className="mt-8 flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-couture-gold">
+                                Entrer dans l'atelier <ChevronRight className="w-3 h-3 group-hover:translate-x-1 transition-transform" />
+                            </div>
+                        </div>
+                        <div className="absolute top-0 right-0 p-4 opacity-5 group-hover:opacity-10 transition-opacity">
+                            <Layers className="w-32 h-32" />
+                        </div>
+                        <div className="absolute inset-x-0 bottom-0 h-1 bg-couture-gold transform scale-x-0 group-hover:scale-x-100 transition-transform origin-left" />
+                    </motion.button>
+
+                    <motion.button
+                        whileHover={{ y: -5 }}
+                        whileTap={{ scale: 0.98 }}
+                        onClick={() => setCurrentPage('lettre')}
+                        className="group relative p-8 bg-white text-left overflow-hidden shadow-2xl border border-slate-100"
+                    >
+                        <div className="relative z-10">
+                            <MessageSquare className="w-8 h-8 text-slate-900 mb-6" />
+                            <h3 className="text-2xl font-black text-slate-900 uppercase tracking-tight mb-2">Studio Lettre</h3>
+                            <p className="text-sm text-slate-500 font-medium">Maîtrisez l'art de l'éloquence professionnelle.</p>
+                            <div className="mt-8 flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-slate-900">
+                                Rédiger ma lettre <ChevronRight className="w-3 h-3 group-hover:translate-x-1 transition-transform" />
+                            </div>
+                        </div>
+                        <div className="absolute top-0 right-0 p-4 opacity-5 group-hover:opacity-10 transition-opacity">
+                            <MessageSquare className="w-32 h-32" />
+                        </div>
+                        <div className="absolute inset-x-0 bottom-0 h-1 bg-slate-900 transform scale-x-0 group-hover:scale-x-100 transition-transform origin-left" />
+                    </motion.button>
+                </div>
+                <div className="mt-12">
                     <p className="text-[10px] font-black uppercase tracking-widest text-slate-400">Accès_Instantané / Sans_Inscription</p>
                 </div>
             </section>
@@ -138,6 +171,7 @@ const App = () => {
                             {currentPage === 'creation' && <CreationPage />}
                             {currentPage === 'lettre' && <LetterPage />}
                             {currentPage === 'templates' && <TemplateSelector />}
+                            {currentPage === 'business' && <BusinessPage />}
                             {currentPage === 'download' && <PreviewPage />}
                             {currentPage === 'sauvegarde' && (
                                 <div className="text-center py-20 grayscale opacity-50">

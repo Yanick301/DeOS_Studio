@@ -7,8 +7,10 @@ import html2canvas from 'html2canvas'
 import { jsPDF } from 'jspdf'
 import { letterTemplates, getLetterTemplate } from './LetterTemplates'
 
+import { AtelierConcierge } from '../cv-builder/AtelierConcierge'
+
 const LetterPage = () => {
-    const { letterData, updateLetterData, cvData, currentLetterTemplateId, setLetterTemplate } = useStore()
+    const { letterData, updateLetterData, cvData, currentLetterTemplateId, setLetterTemplate, language, setLanguage } = useStore()
     const letterRef = useRef<HTMLDivElement>(null)
     const activeTemplate = getLetterTemplate(currentLetterTemplateId)
 
@@ -34,9 +36,26 @@ const LetterPage = () => {
 
     return (
         <div className="space-y-12 pb-20">
-            <header>
-                <h1 className="text-3xl font-black">Lettre de Motivation</h1>
-                <p className="text-slate-500 font-medium italic">"L'art de l'éloquence professionnelle."</p>
+            <header className="flex flex-col md:flex-row items-center justify-between gap-6 border-b border-slate-100 pb-10">
+                <div className="text-left">
+                    <h2 className="text-3xl font-black text-gray-900 font-couture">Studio de Rédaction</h2>
+                    <p className="text-gray-500 mt-2 font-serif italic">"L'art de l'éloquence professionnelle."</p>
+                </div>
+
+                <div className="flex bg-slate-100 p-1.5 rounded-full ring-4 ring-slate-50">
+                    <button
+                        onClick={() => setLanguage('fr')}
+                        className={`px-6 py-2 text-[10px] font-black uppercase tracking-widest transition-all rounded-full ${language === 'fr' ? 'bg-white shadow-lg text-slate-900' : 'text-slate-400 hover:text-slate-600'}`}
+                    >
+                        Français
+                    </button>
+                    <button
+                        onClick={() => setLanguage('en')}
+                        className={`px-6 py-2 text-[10px] font-black uppercase tracking-widest transition-all rounded-full ${language === 'en' ? 'bg-white shadow-lg text-slate-900' : 'text-slate-400 hover:text-slate-600'}`}
+                    >
+                        English
+                    </button>
+                </div>
             </header>
 
             {/* Template Selector */}
@@ -53,8 +72,8 @@ const LetterPage = () => {
                             key={t.id}
                             onClick={() => setLetterTemplate(t.id)}
                             className={`p-4 border-2 transition-all text-left group ${currentLetterTemplateId === t.id
-                                    ? 'border-slate-900 bg-slate-900 text-white'
-                                    : 'border-slate-100 bg-white hover:border-slate-300'
+                                ? 'border-slate-900 bg-slate-900 text-white'
+                                : 'border-slate-100 bg-white hover:border-slate-300'
                                 }`}
                         >
                             <p className="text-[10px] font-black uppercase tracking-widest opacity-40 mb-1 group-hover:opacity-100">Style</p>
@@ -167,6 +186,7 @@ const LetterPage = () => {
                     </div>
                 </div>
             </div>
+            <AtelierConcierge />
         </div>
     )
 }

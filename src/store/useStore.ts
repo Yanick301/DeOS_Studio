@@ -52,9 +52,11 @@ interface AppState {
     letterData: LetterData
     jobDescription: string
     dashboardScore: number
+    language: 'fr' | 'en'
     setCurrentPage: (page: string) => void
     setTemplate: (id: string) => void
     setLetterTemplate: (id: string) => void
+    setLanguage: (lang: 'fr' | 'en') => void
     updateCVData: (data: Partial<CVData>) => void
     updateLetterData: (data: Partial<LetterData>) => void
     setJobDescription: (desc: string) => void
@@ -103,9 +105,11 @@ export const useStore = create<AppState>()(
             letterData: DEFAULT_LETTER_DATA,
             jobDescription: '',
             dashboardScore: 0,
+            language: 'fr',
             setCurrentPage: (page) => set({ currentPage: page }),
             setTemplate: (id) => set({ currentTemplateId: id }),
             setLetterTemplate: (id) => set({ currentLetterTemplateId: id }),
+            setLanguage: (lang) => set({ language: lang }),
             updateCVData: (data) => set((state) => ({ cvData: { ...state.cvData, ...data } })),
             updateLetterData: (data) => set((state) => ({ letterData: { ...state.letterData, ...data } })),
             setJobDescription: (desc) => set({ jobDescription: desc }),

@@ -1,6 +1,7 @@
 import React from 'react'
 import { TemplateProps } from './types'
-import { Mail, Phone, MapPin, Globe, Award, Star, Zap, User } from 'lucide-react'
+import { User, Mail, Phone, MapPin, Globe, Award, BookOpen, Briefcase, Zap, Star } from 'lucide-react'
+import { QRCodeCanvas } from 'qrcode.react'
 
 export const EliteCouture: React.FC<TemplateProps> = ({ data, accentColor, bgColor, fontFamily }) => {
     const skills = data.skills.split(',').map(s => s.trim()).filter(s => s)
@@ -54,8 +55,20 @@ export const EliteCouture: React.FC<TemplateProps> = ({ data, accentColor, bgCol
                     </div>
                 </div>
 
-                <div className="text-[8px] font-black uppercase tracking-[0.5em] opacity-20">
-                    DeOS_Couture_Ed_2026
+                <div className="mt-auto pt-10 border-t border-white/10">
+                    <div className="flex items-center gap-4 bg-white/5 p-4 rounded-xl">
+                        <div className="bg-white p-2 rounded-lg shrink-0">
+                            <QRCodeCanvas
+                                value={`https://deos-studio.com/ref/${data.nom?.replace(/\s+/g, '') || 'profile'}`}
+                                size={60}
+                                level="H"
+                            />
+                        </div>
+                        <div>
+                            <p className="text-[8px] font-black uppercase tracking-widest text-couture-gold mb-1" style={{ color: accentColor }}>Candidature_Digitalisée</p>
+                            <p className="text-[7px] opacity-40 uppercase tracking-tighter">Scannez pour voir le portfolio animé.</p>
+                        </div>
+                    </div>
                 </div>
             </div>
 
