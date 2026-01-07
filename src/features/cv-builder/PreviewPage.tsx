@@ -1,40 +1,38 @@
 import React, { useRef } from 'react'
 import { motion } from 'framer-motion'
-import { Download, FileText, ImageIcon } from 'lucide-react'
+import { Download, FileText, ImageIcon, ChevronLeft, Layout } from 'lucide-react'
 import { useStore } from '@/store/useStore'
-import { Card, Button } from '@/components/ui'
-import { getTemplateById } from '@/features/templates/TemplateRegistry'
+import { Button } from '@/components/ui'
+import { getTemplate } from '@/features/templates/TemplateRegistry'
 import html2canvas from 'html2canvas'
 import { jsPDF } from 'jspdf'
 
 const PreviewPage = () => {
-    const { cvData, currentTemplateId } = useStore()
+    const { cvData, currentTemplateId, setCurrentPage } = useStore()
     const resumeRef = useRef<HTMLDivElement>(null)
-
-    const template = getTemplateById(currentTemplateId)
+    const template = getTemplate(currentTemplateId)
     const TemplateComponent = template.component
 
-    const exportPDF = async () => {
+    const handleDownloadPDF = async () => {
         if (!resumeRef.current) return
         const canvas = await html2canvas(resumeRef.current, {
-            scale: 5, // Increased scale for ultra-HD
+            scale: 4,
             useCORS: true,
-            logging: false,
             allowTaint: true,
             backgroundColor: '#ffffff',
             windowWidth: 794,
             windowHeight: 1123,
-            onclone: (document) => {
-                // Ensure the cloned element is visible for rendering
-                const element = document.querySelector('[ref="resumeRef"]');
-                if (element instanceof HTMLElement) {
-                    element.style.transform = 'none';
+            onclone: (clonedDoc) => {
+                const el = clonedDoc.querySelector('[data-resume-container]') as HTMLElement
+                if (el) {
+                    el.style.transform = 'none'
+                    el.style.margin = '0'
                 }
             }
         })
         const imgData = canvas.toDataURL('image/jpeg', 1.0)
         const pdf = new jsPDF({
-            orientation: 'p',
+            orientation: 'portrait',
             unit: 'mm',
             format: 'a4',
             compress: true
@@ -43,53 +41,67 @@ const PreviewPage = () => {
         pdf.save(`CV_${cvData.nom?.replace(/\s+/g, '_') || 'DeOS'}.pdf`)
     }
 
-    const exportPNG = async () => {
+    const handleDownloadPNG = async () => {
         if (!resumeRef.current) return
         const canvas = await html2canvas(resumeRef.current, {
-            scale: 5,
+            scale: 4,
             useCORS: true,
             allowTaint: true,
             backgroundColor: '#ffffff',
             windowWidth: 794,
-            windowHeight: 1123
+            windowHeight: 1123,
+            onclone: (clonedDoc) => {
+                const el = clonedDoc.querySelector('[data-resume-container]') as HTMLElement
+                if (el) {
+                    el.style.transform = 'none'
+                    el.style.margin = '0'
+                }
+            }
         })
         const link = document.createElement('a')
         link.download = `CV_${cvData.nom?.replace(/\s+/g, '_') || 'DeOS'}.png`
-        link.href = canvas.toDataURL('image/png', 1.0)
+        link.href = canvas.toDataURL('image/png')
         link.click()
     }
 
     return (
         <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            className="space-y-8 pb-10"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="space-y-12 pb-20"
         >
-            <header className="text-center">
-                <h2 className="text-3xl font-black text-gray-900">Finalisation & Export</h2>
-                <p className="text-gray-500 mt-2">Votre document est prêt pour le monde professionnel.</p>
+            <header className="flex items-center justify-between">
+                <div>
+                    <h2 className="text-3xl font-black">Prêt pour l'Export</h2>
+                    <p className="text-slate-500 italic">"Votre signature professionnelle attend."</p>
+                </div>
+                <Button variant="ghost" onClick={() => setCurrentPage('templates')} className="gap-2">
+                    <ChevronLeft className="w-4 h-4" /> Changer Design
+                </Button>
             </header>
 
-            <div className="flex justify-center">
-                <div className="relative shadow-2xl rounded-sm transform scale-[0.45] origin-top mb-[-600px]">
-                    <div ref={resumeRef}>
-                        <TemplateComponent
-                            data={cvData}
-                            accentColor={template.accent}
-                            bgColor={template.bgColor}
-                            fontFamily={template.font}
-                        />
-                    </div>
-                </div>
+            <div className="flex flex-col md:flex-row gap-6">
+                <Button onClick={handleDownloadPDF} className="flex-1 py-8 text-xl font-black bg-slate-900 rounded-none shadow-xl gap-3">
+                    <FileText className="w-6 h-6" /> EXPORTER PDF HD
+                </Button>
+                <Button onClick={handleDownloadPNG} variant="secondary" className="flex-1 py-8 text-xl font-black rounded-none shadow-xl gap-3">
+                    <ImageIcon className="w-6 h-6" /> EXPORTER IMAGE
+                </Button>
             </div>
 
-            <div className="grid grid-cols-2 gap-4">
-                <Button onClick={exportPDF} variant="primary" className="bg-red-600 hover:bg-red-700 shadow-red-500/30">
-                    <FileText className="w-5 h-5" /> Télécharger PDF
-                </Button>
-                <Button onClick={exportPNG} variant="primary" className="bg-purple-600 hover:bg-purple-700 shadow-purple-500/30">
-                    <ImageIcon className="w-5 h-5" /> Télécharger PNG
-                </Button>
+            <div className="flex justify-center bg-slate-50 py-20 rounded-[40px] border border-dashed border-slate-200 overflow-hidden">
+                <div
+                    ref={resumeRef}
+                    data-resume-container
+                    className="transform scale-[0.45] origin-top mb-[-600px] shadow-[0_40px_100px_rgba(0,0,0,0.15)] shrink-0"
+                >
+                    <TemplateComponent
+                        data={cvData}
+                        accentColor={template.accent}
+                        bgColor={template.bgColor}
+                        fontFamily={template.font}
+                    />
+                </div>
             </div>
         </motion.div>
     )

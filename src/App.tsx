@@ -9,53 +9,105 @@ import TemplateSelector from './features/templates/TemplateSelector'
 import DashboardPage from './features/dashboard/DashboardPage'
 import LetterPage from './features/letter/LetterPage'
 import { Button } from './components/ui'
-import { ChevronRight, Award, FileText, Layers, Settings, Sparkles, Star } from 'lucide-react'
+import { ChevronRight, Award, FileText, Layers, Settings, Sparkles, Star, Brain } from 'lucide-react'
 
 const Accueil = () => {
     const { setCurrentPage } = useStore()
 
     return (
         <motion.div
-            initial={{ opacity: 0, scale: 0.95 }}
-            animate={{ opacity: 1, scale: 1 }}
-            exit={{ opacity: 0, scale: 0.95 }}
-            className="space-y-8"
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -30 }}
+            className="space-y-20 pb-20"
         >
-            <div className="bg-white rounded-2xl p-8 border-t-8 border-indigo-600 shadow-2xl bg-gradient-to-br from-white via-white to-indigo-50/30">
-                <Award className="w-10 h-10 text-yellow-500 mb-4" />
-                <h1 className="text-4xl font-extrabold tracking-tight text-gray-900 leading-tight">
-                    <span className="text-indigo-600">Mon CV</span> en un Clic.
-                </h1>
-                <p className="text-lg text-gray-600 mt-4 leading-relaxed">
-                    Votre studio mobile professionnel. Design, structure et impact garantis pour votre carrière.
-                </p>
-                <Button onClick={() => setCurrentPage('creation')} className="mt-8 w-full py-4 text-xl">
-                    Créer Maintenant <ChevronRight className="w-6 h-6 ml-1" />
-                </Button>
-            </div>
+            {/* HEROS SECTION */}
+            <section className="relative text-center pt-10 pb-20 overflow-hidden">
+                <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[500px] h-[500px] bg-couture-gold/5 rounded-full blur-[120px] pointer-events-none" />
 
-            <div className="space-y-4">
-                <h3 className="text-2xl font-bold text-gray-900 flex items-center gap-2">
-                    <Settings className="w-6 h-6 text-gray-400" /> Avantages Clés
-                </h3>
+                <motion.div
+                    initial={{ scale: 0.8, opacity: 0 }}
+                    animate={{ scale: 1, opacity: 1 }}
+                    transition={{ duration: 1, ease: "easeOut" }}
+                    className="inline-flex items-center gap-2 px-6 py-2 bg-slate-900 shadow-2xl rounded-full mb-10"
+                >
+                    <Star className="w-4 h-4 text-couture-gold fill-current" />
+                    <span className="text-[10px] font-black uppercase tracking-[0.4em] text-white">Edition_Limitée_V3</span>
+                </motion.div>
+
+                <h1 className="text-6xl md:text-7xl font-black tracking-tighter leading-none mb-8 font-couture">
+                    L'Excellence <br />
+                    <span className="text-couture-gold italic">à portée de clics.</span>
+                </h1>
+
+                <p className="text-xl text-slate-500 max-w-lg mx-auto leading-relaxed font-serif italic mb-12">
+                    "Votre carrière mérite plus qu'un simple document. Offrez-lui un destin d'exception."
+                </p>
+
+                <div className="flex flex-col gap-4 max-w-sm mx-auto">
+                    <Button
+                        onClick={() => setCurrentPage('creation')}
+                        className="py-8 text-xl font-black bg-slate-900 hover:bg-black shadow-[0_20px_40px_rgba(0,0,0,0.15)] rounded-none group relative overflow-hidden"
+                    >
+                        <span className="relative z-10 flex items-center justify-center gap-2">
+                            Démarrer ma Signature <ChevronRight className="w-6 h-6 group-hover:translate-x-1 transition-transform" />
+                        </span>
+                        <div className="absolute inset-0 bg-couture-gold/10 transform -translateX-full group-hover:translateX-0 transition-transform duration-500" />
+                    </Button>
+                    <p className="text-[10px] font-black uppercase tracking-widest text-slate-400">Accès_Instantané / Sans_Inscription</p>
+                </div>
+            </section>
+
+            {/* FEATURES GRID */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                 {[
-                    { icon: FileText, color: 'text-green-500', bg: 'border-green-500', title: 'Export PDF A4 Pro', desc: 'Haute résolution, prêt pour l\'envoi digital.' },
-                    { icon: Layers, color: 'text-purple-500', bg: 'border-purple-500', title: '20 Templates Élégants', desc: 'Designs modernes adaptés à tous les secteurs.' }
+                    {
+                        icon: Sparkles,
+                        title: 'Design Couture',
+                        desc: 'Des templates gravés par des experts du design éditorial.',
+                        color: 'bg-indigo-50 text-indigo-600'
+                    },
+                    {
+                        icon: Brain,
+                        title: 'IA Stratégique',
+                        desc: 'Score de match en direct pour dominer le marché caché du travail.',
+                        color: 'bg-couture-gold/10 text-couture-gold'
+                    },
+                    {
+                        icon: FileText,
+                        title: 'Lettres de Motivation',
+                        desc: 'Un écosystème complet pour une candidature harmonieuse.',
+                        color: 'bg-slate-50 text-slate-900'
+                    },
+                    {
+                        icon: Award,
+                        title: 'Export Haute-Voltige',
+                        desc: 'PDF vectoriels HD sans aucun défaut de rendu.',
+                        color: 'bg-green-50 text-green-600'
+                    }
                 ].map((feature, i) => (
                     <motion.div
                         key={i}
-                        initial={{ opacity: 0, x: -20 }}
-                        animate={{ opacity: 1, x: 0 }}
+                        initial={{ opacity: 0, x: i % 2 === 0 ? -20 : 20 }}
+                        whileInView={{ opacity: 1, x: 0 }}
+                        viewport={{ once: true }}
                         transition={{ delay: i * 0.1 }}
-                        className={`bg-white rounded-2xl p-4 flex gap-4 items-start shadow-md border-l-4 ${feature.bg}`}
+                        className="p-8 editorial-card group"
                     >
-                        <feature.icon className={`w-8 h-8 shrink-0 ${feature.color}`} />
-                        <div>
-                            <h4 className="font-bold text-gray-900">{feature.title}</h4>
-                            <p className="text-sm text-gray-500">{feature.desc}</p>
+                        <div className={`w-12 h-12 ${feature.color} flex items-center justify-center mb-6 group-hover:scale-110 transition-transform`}>
+                            <feature.icon className="w-6 h-6" />
                         </div>
+                        <h4 className="text-xl font-black mb-2 uppercase tracking-tight">{feature.title}</h4>
+                        <p className="text-sm text-slate-500 leading-relaxed font-medium">{feature.desc}</p>
                     </motion.div>
                 ))}
+            </div>
+
+            {/* SOCIAL PROOF / STATS */}
+            <div className="pt-10 border-t border-slate-100 flex flex-wrap justify-between gap-10 grayscale opacity-40">
+                <div><span className="text-3xl font-black">44+</span> <br /><span className="text-[10px] uppercase font-serif tracking-widest">Templates_Pro</span></div>
+                <div><span className="text-3xl font-black">IA</span> <br /><span className="text-[10px] uppercase font-serif tracking-widest">Intégrée</span></div>
+                <div><span className="text-3xl font-black">HD</span> <br /><span className="text-[10px] uppercase font-serif tracking-widest">Export_Vector</span></div>
             </div>
         </motion.div>
     )

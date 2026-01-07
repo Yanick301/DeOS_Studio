@@ -47,12 +47,14 @@ export interface LetterData {
 interface AppState {
     currentPage: string
     currentTemplateId: string
+    currentLetterTemplateId: string
     cvData: CVData
     letterData: LetterData
     jobDescription: string
     dashboardScore: number
     setCurrentPage: (page: string) => void
     setTemplate: (id: string) => void
+    setLetterTemplate: (id: string) => void
     updateCVData: (data: Partial<CVData>) => void
     updateLetterData: (data: Partial<LetterData>) => void
     setJobDescription: (desc: string) => void
@@ -96,12 +98,14 @@ export const useStore = create<AppState>()(
         (set) => ({
             currentPage: 'accueil',
             currentTemplateId: 'template1',
+            currentLetterTemplateId: 'letter-elite',
             cvData: DEFAULT_CV_DATA,
             letterData: DEFAULT_LETTER_DATA,
             jobDescription: '',
             dashboardScore: 0,
             setCurrentPage: (page) => set({ currentPage: page }),
             setTemplate: (id) => set({ currentTemplateId: id }),
+            setLetterTemplate: (id) => set({ currentLetterTemplateId: id }),
             updateCVData: (data) => set((state) => ({ cvData: { ...state.cvData, ...data } })),
             updateLetterData: (data) => set((state) => ({ letterData: { ...state.letterData, ...data } })),
             setJobDescription: (desc) => set({ jobDescription: desc }),
