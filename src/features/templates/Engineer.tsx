@@ -1,6 +1,6 @@
 import React from 'react'
 import { TemplateProps } from './types'
-import { Settings, Cpu, Globe, Tooltip } from 'lucide-react'
+import { Settings, Cpu, Globe, GraduationCap } from 'lucide-react'
 
 export const Engineer: React.FC<TemplateProps> = ({ data, accentColor, bgColor, fontFamily }) => {
     const skills = data.skills.split(',').map(s => s.trim()).filter(s => s)
@@ -77,7 +77,7 @@ export const Engineer: React.FC<TemplateProps> = ({ data, accentColor, bgColor, 
                         <section>
                             <div className="flex items-center gap-3 mb-6">
                                 <div className="p-2 bg-slate-100 rounded-lg">
-                                    <Tooltip className="w-5 h-5 text-slate-600" />
+                                    <GraduationCap className="w-5 h-5 text-slate-600" />
                                 </div>
                                 <h3 className="text-sm font-black uppercase tracking-[0.2em] text-slate-900">Education</h3>
                             </div>
