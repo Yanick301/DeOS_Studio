@@ -26,8 +26,13 @@
   }
 
   body {
-    @apply bg-background text-couture-slate selection:bg-couture-gold/20 selection:text-couture-slate;
+    @apply bg-background text-couture-slate;
     font-family: 'Inter', sans-serif;
+  }
+
+  ::selection {
+    background-color: rgba(212, 175, 55, 0.2);
+    color: #0f172a;
   }
 
   h1,
